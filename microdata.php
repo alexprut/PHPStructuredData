@@ -693,7 +693,7 @@ class PHPMicrodata
 	}
 
 	/**
-	 * Return the microdata in a <meta> tag with the machine content inside.
+	 * Return the microdata in a <meta> tag with content for machines.
 	 *
 	 * @param   string   $content   The machine content to display
 	 * @param   string   $property  The Property
@@ -731,7 +731,7 @@ class PHPMicrodata
 	}
 
 	/**
-	 * Return the microdata in an <span> tag.
+	 * Return the microdata in a <span> tag.
 	 *
 	 * @param   string   $content   The human value
 	 * @param   string   $property  Optional, the human value to display
