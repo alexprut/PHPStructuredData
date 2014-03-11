@@ -108,6 +108,21 @@ class PHPMicrodata
 	}
 
 	/**
+	 * Reset all params
+	 *
+	 * @return void
+	 */
+	protected function resetParams()
+	{
+		$this->content          = null;
+		$this->machineContent	= null;
+		$this->property         = null;
+		$this->fallbackProperty = null;
+		$this->fallbackType     = null;
+		$this->fallback         = false;
+	}
+
+	/**
 	 * Enable or Disable Microdata semantics output
 	 *
 	 * @param   boolean  $flag  Enable or disable microdata output
@@ -309,6 +324,9 @@ class PHPMicrodata
 		// Control if the Microdata output is enabled, otherwise return the content or empty string
 		if (!$this->enabled)
 		{
+			// Reset params
+			$this->resetParams();
+
 			return ($emptyOutput) ? '' : $html;
 		}
 
@@ -506,11 +524,7 @@ class PHPMicrodata
 		}
 
 		// Reset params
-		$this->content          = null;
-		$this->property         = null;
-		$this->fallbackProperty = null;
-		$this->fallbackType     = null;
-		$this->fallback         = false;
+		$this->resetParams();
 
 		return $html;
 	}

@@ -115,7 +115,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 		$this->assertNull($this->handler->getFallbackProperty());
 		$this->assertNull($this->handler->getFallbackType());
 		$this->assertNull($this->handler->getProperty());
-		$this->assertEmpty($this->handler->getContent());
+		$this->assertNull($this->handler->getContent());
 
 		// Test for a simple display
 		$responce = $this->handler
@@ -223,6 +223,12 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 			->display('meta', true);
 
 		$this->assertEquals($responce, '');
+
+		// Test if the params are reseted after display(), if the library is disabled
+		$this->assertNull($this->handler->getFallbackProperty());
+		$this->assertNull($this->handler->getFallbackType());
+		$this->assertNull($this->handler->getProperty());
+		$this->assertNull($this->handler->getContent());
 	}
 
 	/**
