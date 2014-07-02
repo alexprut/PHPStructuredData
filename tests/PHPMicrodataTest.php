@@ -124,7 +124,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals($responce, "itemprop='url'");
 
-		// Test for a simple display with content
+		// Test for a simple display with $content
 		$responce = $this->handler
 			->property('url')
 			->content($content)
@@ -132,7 +132,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals($responce, "<span itemprop='url'>$content</span>");
 
-		// Test for a simple display if the content is empty ''
+		// Test for a simple display if the $content is empty ''
 		$responce = $this->handler->enable(true)
 			->content('')
 			->property('name')
@@ -150,7 +150,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 			"itemprop='author' itemscope itemtype='https://schema.org/Organization'"
 		);
 
-		// Test for a nested display with content
+		// Test for a nested display with $content
 		$responce = $this->handler
 			->property('author')
 			->content($content)
@@ -173,7 +173,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 			"<span itemprop='author' itemscope itemtype='https://schema.org/Person'><span itemprop='name'>$content</span></span>"
 		);
 
-		// Test for a nested display with Fallback and without content
+		// Test for a nested display with $Fallback and without $content
 		$responce = $this->handler
 			->fallback('Person', 'name')
 			->property('author')
@@ -184,7 +184,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 			"itemprop='author' itemscope itemtype='https://schema.org/Person' itemprop='name'"
 		);
 
-		// Test for a meta display without content
+		// Test for a meta display without $content
 		$responce = $this->handler
 			->property('datePublished')
 			->display();
@@ -242,7 +242,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 		$this->handler->enable(true)->setType('Article');
 		$content = 'anything';
 
-		// Test without content if fallbacks, the Property isn't available in the current Type
+		// Test without $content if fallbacks, the Property isn't available in the current Type
 		$responce = $this->handler
 			->property('anUnanvailableProperty')
 			->fallback('Article', 'about')
@@ -253,7 +253,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 			"itemscope itemtype='https://schema.org/Article' itemprop='about'"
 		);
 
-		// Test wit content if fallbacks, the Property isn't available in the current Type
+		// Test with $content if fallbacks, the Property isn't available in the current Type
 		$responce = $this->handler
 			->content($content)
 			->property('anUnanvailableProperty')
@@ -276,7 +276,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 			"itemscope itemtype='https://schema.org/Article'"
 		);
 
-		// Test with content if fallbacks, the Property isn't available in the current and fallback Type
+		// Test with $content if fallbacks, the Property isn't available in the current Type
 		$responce = $this->handler
 			->content($content)
 			->property('anUnanvailableProperty')
@@ -288,7 +288,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 			"<meta itemscope itemtype='https://schema.org/Article' itemprop='datePublished' content='$content'/>"
 		);
 
-		// Test withtout content if fallbacks, the Property isn't available in the current and fallback Type
+		// Test withtout $content if fallbacks, the Property isn't available in the current Type
 		$responce = $this->handler
 			->property('anUnanvailableProperty')
 			->fallback('Article', 'datePublished')
@@ -315,7 +315,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 		$microdata = $this->handler;
 		$microdata->enable(true)->setType($type);
 
-		// Display Type: Inline
+		// Test Display Type: 'inline'
 		$responce = $microdata->content($content)
 			->property($property)
 			->display('inline');
@@ -325,7 +325,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 			"itemprop='$property'"
 		);
 
-		// Display Type: div
+		// Test Display Type: 'div'
 		$responce = $microdata->content($content)
 			->property($property)
 			->display('div');
@@ -335,7 +335,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 			"<div itemprop='$property'>$content</div>"
 		);
 
-		// Display Type: div without $content
+		// Test Display Type: 'div' without $content
 		$responce = $microdata->property($property)
 			->display('div');
 
@@ -344,7 +344,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 			"<div itemprop='$property'></div>"
 		);
 
-		// Display Type: span
+		// Test Display Type: 'span'
 		$responce = $microdata->content($content)
 			->property($property)
 			->display('span');
@@ -354,7 +354,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 			"<span itemprop='$property'>$content</span>"
 		);
 
-		// Display Type: span without $content
+		// Test Display Type: 'span' without $content
 		$responce = $microdata
 			->property($property)
 			->display('span');
@@ -364,7 +364,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 			"<span itemprop='$property'></span>"
 		);
 
-		// Display Type: meta
+		// Test Display Type: 'meta'
 		$responce = $microdata->content($content)
 			->property($property)
 			->display('meta');
@@ -374,7 +374,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 			"<meta itemprop='$property' content='$content'/>"
 		);
 
-		// Display Type: meta without $content
+		// Test Display Type: 'meta' without $content
 		$responce = $microdata
 		->property($property)
 		->display('meta');
@@ -485,8 +485,8 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 
 		// Test a displayScope() when microdata are disabled
 		$this->assertEquals(
-			$this->handler->displayScope(),
-			"itemscope itemtype='https://schema.org/$type'"
+			$this->handler->enable(false)->displayScope(),
+			""
 		);
 	}
 

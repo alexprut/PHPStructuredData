@@ -223,29 +223,39 @@ class PHPMicrodata
 	}
 
 	/**
-	 * Setup a Text value or Content value for the Microdata
+	 * Setup a Text content or Content for the machines
 	 *
-	 * @param   string  $value         The human value or marchine value to be used
-	 * @param   string  $machineValue  The machine value
+	 * @param   string  $content         The human content or machine content to be used
+	 * @param   string  $machineContent  The machine content
 	 *
 	 * @return  PHPMicrodata  Instance of $this
 	 */
-	public function content($value, $machineValue = null)
+	public function content($content, $machineContent = null)
 	{
-		$this->content = $value;
-		$this->machineContent = $machineValue;
+		$this->content = $content;
+		$this->machineContent = $machineContent;
 
 		return $this;
 	}
 
 	/**
-	 * Return the content variable
+	 * Return the $content variable
 	 *
 	 * @return  string
 	 */
 	public function getContent()
 	{
 		return $this->content;
+	}
+
+	/**
+	 * Return the $machineContent variable
+	 *
+	 * @return  string
+	 */
+	public function getMachineContent()
+	{
+		return $this->machineContent;
 	}
 
 	/**
@@ -833,7 +843,7 @@ class PHPMicrodata
 	{
 		if (stripos($scope, 'http') !== 0)
 		{
-			$scope = 'https://schema.org/' . ucfirst($scope);
+			$scope = 'https://schema.org/' . static::sanitizeType($scope);
 		}
 
 		return "itemscope itemtype='$scope'";

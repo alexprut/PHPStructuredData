@@ -1,18 +1,20 @@
-PHPMicrodata [![Build Status](https://travis-ci.org/PAlexcom/PHPStructuredData.svg)](https://travis-ci.org/PAlexcom/PHPStructuredData)
+PHPStructuredData [![Build Status](https://travis-ci.org/PAlexcom/PHPStructuredData.svg)](https://travis-ci.org/PAlexcom/PHPStructuredData)
 ============
 A PHP library to implement and output http://schema.org microdata semantics.    
 This library was merged in the Joomla master branch and now available from version 3.2 (called [JMicrodata](https://github.com/joomla/joomla-cms/tree/master/libraries/joomla/microdata "JMicrodata")).  
 Created during the Google Summer of Code 2013 for my Joomla! project.  
 
-## Quick overview  
+Quick overview
+--------------
 The library was designed with this goals in mind:  
-1. __Having the possibility to switch the Microdata Type dynamically__, without the use of other overrides, you just change the Type (there are 558 different available types).  
-2. Display  __validated semantics__, the library takes care to display it correctly.   
-3. __Enable/disable the microdata__ semantics.   
-4. __Fallbacks__, you should never lose any meaningful semantic.  
+1. __Having the possibility to switch the Microdata Type dynamically__, you just change the Type (there are more than 550+ different available Types).  
+2. Display  __validated semantics__, the library takes care of displaying data in the correct format (e.g. all the dates in the ISO standard).  
+3. __Enable/disable the microdata__ semantics.  
+4. __Fallbacks__, you should never lose any meaningful semantic (e.g. if you switch the page type and it doesn’t have an author property it will fallback to the Person type with the name property).  
   
-#### Example
-Let's suppose that you allready use an istance of ```$microdata = new PHPMicrodata($type);``` the following code which is part of your article, and __you've selected__ ```$type="article"``` __the Article type__.
+Example
+-------
+Let's suppose that you allready use an istance of ```$microdata = new PHPStructuredData($type);``` the following code which is part of your article, and __you've selected__ ```$type="article"``` __the Article type__.
 ```php
 <div <?php echo $microdata->displayScope();?>>
 	<!-- Author of the content -->
@@ -65,16 +67,18 @@ It will render:
 ```
 Once again everything is done by the library. You don't need 558 different overrides, you just play with the global params.
 
-## Documentation  
-```PHPMicrodata``` library uses the ```types.json``` file to check and output validated Microdata semantics, that file was automatically created with the https://github.com/PAlexcom/Spider4Schema web crawler.   
+Documentation
+-------------
+```PHPStructuredData``` library uses the ```types.json``` file to check and output validated Microdata semantics, that file was automatically created with the https://github.com/PAlexcom/Spider4Schema web crawler.   
       
-For further documentation on ```PHPMicrodata``` see http://docs.joomla.org/microdata    
+For further documentation on ```PHPStructuredData``` see http://docs.joomla.org/microdata    
   
 
-## Usage
+Usage
+-----
 First of all you need to make an instance of the library:  
 ```php
-<?php $microdata = new JMicrodata('Article'); ?>
+<?php $microdata = new PHPMicrodata('Article'); ?>
 ```
 So let's suppose that you have the following _string_ which is part of your article and the current scope is _Article_:   
 ```php
@@ -115,4 +119,4 @@ Written by Alexandru Pruteanu
 
 License
 -------
-PHPMicrodata is licensed under the MIT License - see the LICENSE file for details
+PHPStructuredData is licensed under the MIT License - see the LICENSE file for details.
