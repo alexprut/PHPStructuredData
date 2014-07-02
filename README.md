@@ -1,4 +1,4 @@
-PHPMicrodata
+PHPMicrodata [![Build Status](https://travis-ci.org/PAlexcom/PHPStructuredData.svg)](https://travis-ci.org/PAlexcom/PHPStructuredData)
 ============
 A PHP library to implement and output http://schema.org microdata semantics.    
 This library was merged in the Joomla master branch and now available from version 3.2 (called [JMicrodata](https://github.com/joomla/joomla-cms/tree/master/libraries/joomla/microdata "JMicrodata")).  
