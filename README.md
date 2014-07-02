@@ -113,3 +113,6 @@ The library will display the following:
 Written by Alexandru Pruteanu
 ```  
 
+License
+-------
+PHPMicrodata is licensed under the MIT License - see the LICENSE file for details

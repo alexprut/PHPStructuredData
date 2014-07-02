@@ -1,7 +1,7 @@
 <?php
 /**
- * @copyright  Copyright (C) 2014. All rights reserved.
- * @license    GNU General Public License version 2 or later; see LICENSE
+ * @copyright  Copyright (C) 2013 - 2014 P.Alex (Alexandru Pruteanu)
+ * @license    Licensed under the MIT License; see LICENSE
  */
 
 /**
