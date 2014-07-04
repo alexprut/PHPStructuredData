@@ -4,12 +4,12 @@
  * @license    Licensed under the MIT License; see LICENSE
  */
 
-include_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'microdata.php';
+include_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'rdfa.php';
 
 /**
- * Test class for PHPMicrodata
+ * Test class for PHPRDFa
  */
-class PHPMicrodataTest extends PHPUnit_Framework_TestCase
+class PHPRDFaTest extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * The default fallback Type
@@ -32,7 +32,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 	 */
 	public function setUp()
 	{
-		$this->handler = new PHPMicrodata;
+		$this->handler = new PHPRDFa;
 	}
 
 	/**
@@ -42,12 +42,12 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testDefaults()
 	{
-		$this->handler = new PHPMicrodata;
+		$this->handler = new PHPRDFa;
 
 		// Test that the default Type is 'Thing'
 		$this->assertEquals($this->handler->getType(), $this->defaultType);
 
-		$this->assertClassHasAttribute('types', 'PHPMicrodata');
+		$this->assertClassHasAttribute('types', 'PHPRDFa');
 	}
 
 	/**
@@ -101,7 +101,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 		$content = 'anything';
 
 		// Test display() with all null params
-		$this->handler = new PHPMicrodata;
+		$this->handler = new PHPRDFa;
 
 		$this->assertEquals($this->handler->display(), '');
 
@@ -122,7 +122,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 			->property('url')
 			->display();
 
-		$this->assertEquals($response, "itemprop='url'");
+		$this->assertEquals($response, "property='url'");
 
 		// Test for a simple display with $content
 		$response = $this->handler
@@ -130,7 +130,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 			->content($content)
 			->display();
 
-		$this->assertEquals($response, "<span itemprop='url'>$content</span>");
+		$this->assertEquals($response, "<span property='url'>$content</span>");
 
 		// Test for a simple display if the $content is empty ''
 		$response = $this->handler->enable(true)
@@ -138,7 +138,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 			->property('name')
 			->display();
 
-		$this->assertEquals($response, "<span itemprop='name'></span>");
+		$this->assertEquals($response, "<span property='name'></span>");
 
 		// Test for a simple 'nested' display
 		$response = $this->handler
@@ -147,7 +147,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals(
 			$response,
-			"itemprop='author' itemscope itemtype='https://schema.org/Organization'"
+			"property='author' vocab='https://schema.org' typeof='Organization'"
 		);
 
 		// Test for a 'nested' display with $content
@@ -158,7 +158,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals(
 			$response,
-			"<span itemprop='author' itemscope itemtype='https://schema.org/Organization'>$content</span>"
+			"<span property='author' vocab='https://schema.org' typeof='Organization'>$content</span>"
 		);
 
 		// Test for a 'nested' display with $content and $Fallback
@@ -170,7 +170,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals(
 			$response,
-			"<span itemprop='author' itemscope itemtype='https://schema.org/Person'><span itemprop='name'>$content</span></span>"
+			"<span property='author' vocab='https://schema.org' typeof='Person'><span property='name'>$content</span></span>"
 		);
 
 		// Test for a 'nested' display with $Fallback and without $content
@@ -181,7 +181,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals(
 			$response,
-			"itemprop='author' itemscope itemtype='https://schema.org/Person' itemprop='name'"
+			"property='author' vocab='https://schema.org' typeof='Person' property='name'"
 		);
 
 		// Test for a 'meta' display without $content
@@ -191,7 +191,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals(
 			$response,
-			"itemprop='datePublished'"
+			"property='datePublished'"
 		);
 
 		// Test for a 'meta' display with $content
@@ -203,7 +203,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals(
 			$response,
-			"<meta itemprop='datePublished' content='$content'/>$content"
+			"<meta property='datePublished' content='$content'/>$content"
 		);
 
 		// Test for a 'meta' display with human $content and $machineContent
@@ -215,7 +215,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals(
 			$response,
-			"<meta itemprop='datePublished' content='$machineContent'/>$content"
+			"<meta property='datePublished' content='$machineContent'/>$content"
 		);
 
 		// Test if the library is disabled
@@ -236,7 +236,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals($response, '');
 
-		// Test if the params are reseted after the display() function, if the library is disabled
+		// Test if the params are reseted after display(), if the library is disabled
 		$this->assertNull($this->handler->getFallbackProperty());
 		$this->assertNull($this->handler->getFallbackType());
 		$this->assertNull($this->handler->getProperty());
@@ -262,7 +262,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals(
 			$response,
-			"itemscope itemtype='https://schema.org/Article' itemprop='about'"
+			"vocab='https://schema.org' typeof='Article' property='about'"
 		);
 
 		// Test with $content if fallbacks, the $Property isn't available in the current Type
@@ -274,10 +274,10 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals(
 			$response,
-			"<span itemscope itemtype='https://schema.org/Article'><span itemprop='about'>$content</span></span>"
+			"<span vocab='https://schema.org' typeof='Article'><span property='about'>$content</span></span>"
 		);
 
-		// Test if fallbacks, the $Property isn't available in the current and fallback Type
+		// Test if fallbacks, the $Property isn't available in the current and the fallback Type
 		$response = $this->handler
 			->property('anUnavailableProperty')
 			->fallback('Article', 'anUnavailableProperty')
@@ -285,7 +285,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals(
 			$response,
-			"itemscope itemtype='https://schema.org/Article'"
+			"vocab='https://schema.org' typeof='Article'"
 		);
 
 		// Test with $content if fallbacks, the $Property isn't available in the current $Type
@@ -297,10 +297,10 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals(
 			$response,
-			"<meta itemscope itemtype='https://schema.org/Article' itemprop='datePublished' content='$content'/>"
+			"<meta vocab='https://schema.org' typeof='Article' property='datePublished' content='$content'/>"
 		);
 
-		// Test without $content if fallbacks, the $Property isn't available in the current $Type
+		// Test without $content if fallbacks, the Property isn't available in the current Type
 		$response = $this->handler
 			->property('anUnavailableProperty')
 			->fallback('Article', 'datePublished')
@@ -308,7 +308,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals(
 			$response,
-			"itemscope itemtype='https://schema.org/Article' itemprop='datePublished'"
+			"vocab='https://schema.org' typeof='Article' property='datePublished'"
 		);
 	}
 
@@ -333,7 +333,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals(
 			$response,
-			"itemprop='$property'"
+			"property='$property'"
 		);
 
 		// Test Display Type: 'div'
@@ -343,7 +343,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals(
 			$response,
-			"<div itemprop='$property'>$content</div>"
+			"<div property='$property'>$content</div>"
 		);
 
 		// Test Display Type: 'div' without $content
@@ -352,7 +352,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals(
 			$response,
-			"<div itemprop='$property'></div>"
+			"<div property='$property'></div>"
 		);
 
 		// Test Display Type: 'span'
@@ -362,7 +362,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals(
 			$response,
-			"<span itemprop='$property'>$content</span>"
+			"<span property='$property'>$content</span>"
 		);
 
 		// Test Display Type: 'span' without $content
@@ -372,7 +372,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals(
 			$response,
-			"<span itemprop='$property'></span>"
+			"<span property='$property'></span>"
 		);
 
 		// Test Display Type: 'meta'
@@ -382,7 +382,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals(
 			$response,
-			"<meta itemprop='$property' content='$content'/>"
+			"<meta property='$property' content='$content'/>"
 		);
 
 		// Test Display Type: 'meta' without $content
@@ -392,7 +392,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals(
 			$response,
-			"<meta itemprop='$property' content=''/>"
+			"<meta property='$property' content=''/>"
 		);
 	}
 
@@ -411,7 +411,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 		// Test the displayScope() function when the library is enabled
 		$this->assertEquals(
 			$this->handler->displayScope(),
-			"itemscope itemtype='https://schema.org/$type'"
+			"vocab='https://schema.org' typeof='$type'"
 		);
 
 		// Test the displayScope() function when the library is disabled
@@ -434,20 +434,20 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 
 		// Test with all params
 		$this->assertEquals(
-			PHPMicrodata::htmlMeta($content, $property, $scope),
-			"<meta itemscope itemtype='https://schema.org/$scope' itemprop='$property' content='$content'/>"
+			PHPRDFa::htmlMeta($content, $property, $scope),
+			"<meta vocab='https://schema.org' typeof='$scope' property='$property' content='$content'/>"
 		);
 
 		// Test with the $inverse mode
 		$this->assertEquals(
-			PHPMicrodata::htmlMeta($content, $property, $scope, true),
-			"<meta itemprop='$property' itemscope itemtype='https://schema.org/$scope' content='$content'/>"
+			PHPRDFa::htmlMeta($content, $property, $scope, true),
+			"<meta property='$property' vocab='https://schema.org' typeof='$scope' content='$content'/>"
 		);
 
 		// Test without the $scope
 		$this->assertEquals(
-			PHPMicrodata::htmlMeta($content, $property),
-			"<meta itemprop='$property' content='$content'/>"
+			PHPRDFa::htmlMeta($content, $property),
+			"<meta property='$property' content='$content'/>"
 		);
 	}
 
@@ -460,36 +460,36 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 	{
 		// Setup
 		$scope    = 'Article';
-		$content  = 'microdata';
+		$content  = 'anything';
 		$property = 'about';
 
 		// Test with all params
 		$this->assertEquals(
-			PHPMicrodata::htmlDiv($content, $property, $scope),
-			"<div itemscope itemtype='https://schema.org/$scope' itemprop='$property'>$content</div>"
+			PHPRDFa::htmlDiv($content, $property, $scope),
+			"<div vocab='https://schema.org' typeof='$scope' property='$property'>$content</div>"
 		);
 
-		// Test with the $inverse mode
+		// Test with the inverse mode
 		$this->assertEquals(
-			PHPMicrodata::htmlDiv($content, $property, $scope, true),
-			"<div itemprop='$property' itemscope itemtype='https://schema.org/$scope'>$content</div>"
+			PHPRDFa::htmlDiv($content, $property, $scope, true),
+			"<div property='$property' vocab='https://schema.org' typeof='$scope'>$content</div>"
 		);
 
 		// Test without the $scope
 		$this->assertEquals(
-			PHPMicrodata::htmlDiv($content, $property),
-			"<div itemprop='$property'>$content</div>"
+			PHPRDFa::htmlDiv($content, $property),
+			"<div property='$property'>$content</div>"
 		);
 
 		// Test without the $property
 		$this->assertEquals(
-			PHPMicrodata::htmlDiv($content, $property, $scope, true),
-			"<div itemprop='$property' itemscope itemtype='https://schema.org/$scope'>$content</div>"
+			PHPRDFa::htmlDiv($content, $property, $scope, true),
+			"<div property='$property' vocab='https://schema.org' typeof='$scope'>$content</div>"
 		);
 
 		// Test without the $scope, $property
 		$this->assertEquals(
-			PHPMicrodata::htmlDiv($content),
+			PHPRDFa::htmlDiv($content),
 			"<div>$content</div>"
 		);
 	}
@@ -508,31 +508,31 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 
 		// Test with all params
 		$this->assertEquals(
-			PHPMicrodata::htmlSpan($content, $property, $scope),
-			"<span itemscope itemtype='https://schema.org/$scope' itemprop='$property'>$content</span>"
+			PHPRDFa::htmlSpan($content, $property, $scope),
+			"<span vocab='https://schema.org' typeof='$scope' property='$property'>$content</span>"
 		);
 
 		// Test with the inverse mode
 		$this->assertEquals(
-			PHPMicrodata::htmlSpan($content, $property, $scope, true),
-			"<span itemprop='$property' itemscope itemtype='https://schema.org/$scope'>$content</span>"
+			PHPRDFa::htmlSpan($content, $property, $scope, true),
+			"<span property='$property' vocab='https://schema.org' typeof='$scope'>$content</span>"
 		);
 
 		// Test without the $scope
 		$this->assertEquals(
-			PHPMicrodata::htmlSpan($content, $property),
-			"<span itemprop='$property'>$content</span>"
+			PHPRDFa::htmlSpan($content, $property),
+			"<span property='$property'>$content</span>"
 		);
 
 		// Test without the $property
 		$this->assertEquals(
-			PHPMicrodata::htmlSpan($content, $property, $scope, true),
-			"<span itemprop='$property' itemscope itemtype='https://schema.org/$scope'>$content</span>"
+			PHPRDFa::htmlSpan($content, $property, $scope, true),
+			"<span property='$property' vocab='https://schema.org' typeof='$scope'>$content</span>"
 		);
 
 		// Test without the $scope, $property
 		$this->assertEquals(
-			PHPMicrodata::htmlSpan($content),
+			PHPRDFa::htmlSpan($content),
 			"<span>$content</span>"
 		);
 	}

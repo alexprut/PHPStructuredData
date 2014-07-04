@@ -7,12 +7,12 @@
 include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'structuredData.php';
 
 /**
- * PHP class for interacting with Microdata semantics.
+ * PHP class for interacting with RDFa Lite 1.1 semantics.
  */
-class PHPMicrodata extends PHPStructuredData
+class PHPRDFa extends PHPStructuredData
 {
 	/**
-	 * Return Microdata semantics in a <meta> tag with content for machines.
+	 * Return RDFa semantics in a <meta> tag with content for machines.
 	 *
 	 * @param   string   $content   The machine content to display
 	 * @param   string   $property  The Property
@@ -27,7 +27,7 @@ class PHPMicrodata extends PHPStructuredData
 	}
 
 	/**
-	 * Return Microdata semantics in a <span> tag.
+	 * Return RDFa semantics in a <span> tag.
 	 *
 	 * @param   string   $content   The human content
 	 * @param   string   $property  Optional, the human content to display
@@ -42,7 +42,7 @@ class PHPMicrodata extends PHPStructuredData
 	}
 
 	/**
-	 * Return Microdata semantics in a <div> tag.
+	 * Return RDFa semantics in a <div> tag.
 	 *
 	 * @param   string   $content   The human content
 	 * @param   string   $property  Optional, the human content to display
@@ -57,7 +57,7 @@ class PHPMicrodata extends PHPStructuredData
 	}
 
 	/**
-	 * Return Microdata semantics in a specified tag.
+	 * Return RDFa semantics in a specified tag.
 	 *
 	 * @param   string   $tag       The HTML tag
 	 * @param   string   $content   The human content
@@ -69,14 +69,14 @@ class PHPMicrodata extends PHPStructuredData
 	 */
 	public static function htmlTag($tag, $content, $property = '', $scope = '', $invert = false)
 	{
-		// Control if the $Property has already the 'itemprop' prefix
-		if (!empty($property) && stripos($property, 'itemprop') !== 0)
+		// Control if the $Property has already the 'property' prefix
+		if (!empty($property) && stripos($property, 'property') !== 0)
 		{
 			$property = static::htmlProperty($property);
 		}
 
-		// Control if the $Scope have already the 'itemscope' prefix
-		if (!empty($scope) && stripos($scope, 'itemscope') !== 0)
+		// Control if the $Scope have already the 'typeof' prefix
+		if (!empty($scope) && stripos($scope, 'typeof') !== 0)
 		{
 			$scope = static::htmlScope($scope);
 		}
@@ -112,7 +112,7 @@ class PHPMicrodata extends PHPStructuredData
 	 */
 	public static function htmlScope($scope)
 	{
-		return "itemscope itemtype='https://schema.org/" . static::sanitizeType($scope) . "'";
+		return "vocab='https://schema.org' typeof='" . static::sanitizeType($scope) . "'";
 	}
 
 	/**
@@ -124,6 +124,6 @@ class PHPMicrodata extends PHPStructuredData
 	 */
 	public static function htmlProperty($property)
 	{
-		return "itemprop='$property'";
+		return "property='$property'";
 	}
 }

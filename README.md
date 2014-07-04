@@ -1,122 +1,146 @@
 PHPStructuredData [![Build Status](https://travis-ci.org/PAlexcom/PHPStructuredData.svg)](https://travis-ci.org/PAlexcom/PHPStructuredData)
 ============
-A PHP library to implement and output http://schema.org microdata semantics.    
-This library was merged in the Joomla master branch and now available from version 3.2 (called [JMicrodata](https://github.com/joomla/joomla-cms/tree/master/libraries/joomla/microdata "JMicrodata")).  
-Created during the Google Summer of Code 2013 for my Joomla! project.  
+A set of PHP libraries that use the http://schema.org vocabulary to implement and output Microdata or RDFa Live 1.1 semantics.  
+This library is used in the Joomla CMS since version 3.2 (called [JMicrodata](https://github.com/joomla/joomla-cms/tree/master/libraries/joomla/microdata "JMicrodata")).  
+Created during the Google Summer of Code 2013 and 2014.
 
 Quick overview
 --------------
 The library was designed with this goals in mind:  
-1. __Having the possibility to switch the Microdata Type dynamically__, you just change the Type (there are more than 550+ different available Types).  
-2. Display  __validated semantics__, the library takes care of displaying data in the correct format (e.g. all the dates in the ISO standard).  
-3. __Enable/disable the microdata__ semantics.  
-4. __Fallbacks__, you should never lose any meaningful semantic (e.g. if you switch the page type and it doesn’t have an author property it will fallback to the Person type with the name property).  
-  
+1. Having the possibility to __switch between Microdata__ and __RDFa Lite 1.1__ semantics.  
+2. Having the possibility to __switch the Type dynamically__, you just change the Type (there are more than 550+ different available Types).  
+3. Display  __validated semantics__, the library takes care of displaying data in the correct format (e.g. all the dates in the ISO standard).  
+4. __Enable/disable__ the __library__ output.  
+5. __Fallbacks__, you should never lose any meaningful semantic (e.g. if you change the Type and it does not have an _author_ Property, it will fallback to the _Person_ Type with the _name_ Property).  
+
+Class diagram
+-------------
+![Class Diagram](https://palexcom.github.io/PHPStructuredData/images/classdiagram.png)
+
 Example
 -------
-Let's suppose that you allready use an istance of ```$microdata = new PHPStructuredData($type);``` the following code which is part of your article, and __you've selected__ ```$type="article"``` __the Article type__.
+Let's suppose that you already have an instance of the Microdata or RDFa library. And you need to add Microdata or RDFa semantics to the following HTML which is part of an article (_e.g._ ```$sd = new PHPMicrodata('Article');```).
 ```php
-<div <?php echo $microdata->displayScope();?>>
-	<!-- Author of the content -->
+<div <?php echo $sd->displayScope();?>>
+    <!-- Title -->
+    <?php echo $sd->content('How to Tie a Reef Knot')->property('name')->display();?>
+	<!-- Author-->
     <span>
-    	Written by <?php echo $microdata->content('Alexandru Pruteanu')->property('author')->fallback('Person', 'name')->display();?>
+    	Written by <?php echo $sd->content('John Doe')->property('author')->fallback('Person', 'name')->display();?>
     </span>
-    <!-- The content -->
-    <?php echo $microdata->content('Here is the article text...')->property('articleBody')->display();?>
+    <!-- Date published -->
+    <?php echo $sd->content('1 January 2014', '2014-01-01T00:00:00+00:00')->property('datePublished')->display();?>
+    <!-- Content -->
+    <?php echo $sd->content('Lorem ipsum dolor sit amet...')->property('articleBody')->display();?>
 <div>
 ```
-It will render:
+The ```PHPMicrodata``` library will render:
 ```html
 <div itemscope itemtype='https://schema.org/Article'>
-    <!-- Author of the content -->
+    <!-- Title -->
+    <span itemprop='name'>
+        How to Tie a Reef Knot
+    </span>
+    <!-- Author -->
     <span>
     	Written by
         <span itemprop='author' itemscope itemtype='https://schema.org/Person'>
-            <span itemprop='name'>Alexandru Pruteanu</span>
+            <span itemprop='name'>John Doe</span>
         </span>
     </span>
-    <!-- The content -->
-    <span itemprop='articleBody'>Here is the article text...</span>
+    <!-- Date published -->
+    <meta itemprop='datePublished' content='2014-01-01T00:00:00+00:00'/>1 January 2014
+    <!-- Content -->
+    <span itemprop='articleBody'>
+        Lorem ipsum dolor sit amet...
+    </span>
 <div>
 ```
-Instead, if you decide to change the current Type, let's say __you change in__ ```$type="thing"```  __the Thing type__
-It will render:
+The ```PHPRDFa``` library will render:
+```html
+<div vocab='https://schema.org' typeof='Article'>
+    <!-- Title -->
+    <span property='name'>
+        How to Tie a Reef Knot
+    </span>
+    <!-- Author -->
+    <span>
+    	Written by
+        <span property='author' vocab='https://schema.org' typeof='Person'>
+            <span property='name'>John Doe</span>
+        </span>
+    </span>
+    <!-- Date published -->
+    <meta property='datePublished' content='2014-01-01T00:00:00+00:00'/>1 January 2014
+    <!-- Content -->
+    <span property='articleBody'>
+        Lorem ipsum dolor sit amet...
+    </span>
+<div>
+```
+Instead, if you decide to change the current Type (_e.g._ ```$sd->setType('Thing');```).  
+The ```PHPMicrodata``` library will render:
 ```html
 <div itemscope itemtype='https://schema.org/Thing'>
-    <!-- Author of the content -->
+    <!-- Title -->
+    <span itemprop='name'>
+        How to Tie a Reef Knot
+    </span>
+    <!-- Author -->
     <span>
     	Written by
         <span itemscope itemtype='https://schema.org/Person'>
-            <span itemprop='name'>Alexandru Pruteanu</span>
+            <span itemprop='name'>John Doe</span>
         </span>
     </span>
-    <!-- The content -->
-    Here is the article text...
+    <!-- Date published -->
+    1 January 2014
+    <!-- Content -->
+    Lorem ipsum dolor sit amet...
 <div>
 ```
-As you can see ```Alexandru Pruteanu``` __fallbacks__ to the Person type, and there is no loss of information, even if the current Type doesn't have an ```author``` Property it will display important semantic information for the machines, the search engines know that there is a Person ```Alexandru Pruteanu```. And everything is valid, done fast and automatically.
-Instead, if you don't need all that microdata information, __you just disable that feature__ ```$microdata->enable(false)```.
-It will render:
+The ```PHPRDFa``` library will render:
 ```html
-<div>
-    <!-- Author of the content -->
-    <span>Written by Alexandru Pruteanu</span>
-    <!-- The content -->
-    Here is the article text...
+<div vocab='https://schema.org' typeof='Thing'>
+    <!-- Title -->
+    <span itemprop='name'>
+        How to Tie a Reef Knot
+    </span>
+    <!-- Author -->
+    <span>
+    	Written by
+        <span vocab='https://schema.org' typeof='Person'>
+            <span property='name'>John Doe</span>
+        </span>
+    </span>
+    <!-- Date published -->
+    1 January 2014
+    <!-- Content -->
+    Lorem ipsum dolor sit amet...
 <div>
 ```
-Once again everything is done by the library. You don't need 558 different overrides, you just play with the global params.
+As you can see ```John Doe``` __fallbacks__ to the _Person_ Type, and there is no loss of information, even if the current Type doesn't have an _author_ Property it will display important information for the machines, search engines know that there is a Person ```John Doe```.  
+Instead, if you decide to not render Microdata or RDFa semantics, you just __disable the library__ output (_e.g._ ```$sd->enable('false');```).  
+Both ```PHPMicrodata``` and ```PHPRDFa``` library will render:
+```html
+<div >
+    <!-- Title -->
+    How to Tie a Reef Knot
+	<!-- Author-->
+    <span>
+    	Written by John Doe
+    </span>
+    <!-- Date published -->
+    1 January 2014
+    <!-- Content -->
+    Lorem ipsum dolor sit amet...
+<div>
+```
 
 Documentation
 -------------
-```PHPStructuredData``` library uses the ```types.json``` file to check and output validated Microdata semantics, that file was automatically created with the https://github.com/PAlexcom/Spider4Schema web crawler.   
-      
-For further documentation on ```PHPStructuredData``` see http://docs.joomla.org/microdata    
-  
-
-Usage
------
-First of all you need to make an instance of the library:  
-```php
-<?php $microdata = new PHPMicrodata('Article'); ?>
-```
-So let's suppose that you have the following _string_ which is part of your article and the current scope is _Article_:   
-```php
-<?php echo 'Written by Alexandru Pruteanu'; ?>
-```  
-And the microdata you need to add is an _author_ property:   
-```php
-<?php echo 'Written by ' . $microdata->content('Alexandru Pruteanu')->property('author')->fallback('Person', 'name')->display(); ?>
-```  
-The library will display:  
-```html
-Written by  
-<span itemprop='author' itemscope itemtype='https://schema.org/Person'>
-	<span itemprop='name'>
-		Alexandru Pruteanu
-	</span>
-</span>
-```
-— What happens if the current scope is something else than _Article_, for example a _Product_ scope, and the current scope doesn't have an author property?  
-Well it will fallback in:  
-```html
-Written by
-<span itemscope itemtype='https://schema.org/Person'>
-	<span itemprop='name'>
-		Alexandru Pruteanu
-	</span>
-</span>
-```
-— If I want to disable the microdata semantics output?  
-You can simply disable the microdata output by calling the following function:  
-```php
-<?php $microdata->enable(false); ?>
-```  
-The library will display the following:   
-```html
-Written by Alexandru Pruteanu
-```  
+```PHPStructuredData``` libraries use the ```types.json``` file to check and output validated semantics, that file contains all the available Types and Properties from the http://schema.org vocabulary, and it was generated automatically with the https://github.com/PAlexcom/Spider4Schema web crawler.
 
 License
 -------
-PHPStructuredData is licensed under the MIT License - see the LICENSE file for details.
+PHPStructuredData is licensed under the MIT License – see the LICENSE file for details.
