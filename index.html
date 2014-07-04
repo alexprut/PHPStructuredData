@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="PHPStructureData : A PHP library to implement and output http://schema.org microdata semantics." />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>PHPStructureData</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/PAlexcom/PHPStructuredData">View on GitHub</a>
+
+          <h1 id="project_title">PHPStructureData</h1>
+          <h2 id="project_tagline">A PHP library to implement and output http://schema.org microdata semantics.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/PAlexcom/PHPStructuredData/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/PAlexcom/PHPStructuredData/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="phpstructureddata-" class="anchor" href="#phpstructureddata-"><span class="octicon octicon-link"></span></a>PHPStructuredData <a href="https://travis-ci.org/PAlexcom/PHPStructuredData"><img src="https://travis-ci.org/PAlexcom/PHPStructuredData.svg" alt="Build Status"></a>
+</h1>
+
+<p>A PHP library to implement and output <a href="http://schema.org">http://schema.org</a> microdata semantics.<br>
+This library was merged in the Joomla master branch and now available from version 3.2 (called <a href="https://github.com/joomla/joomla-cms/tree/master/libraries/joomla/microdata" title="JMicrodata">JMicrodata</a>).<br>
+Created during the Google Summer of Code 2013 for my Joomla! project.  </p>
+
+<h2>
+<a name="quick-overview" class="anchor" href="#quick-overview"><span class="octicon octicon-link"></span></a>Quick overview</h2>
+
+<p>The library was designed with this goals in mind:<br>
+1. <strong>Having the possibility to switch the Microdata Type dynamically</strong>, you just change the Type (there are more than 550+ different available Types).<br>
+2. Display  <strong>validated semantics</strong>, the library takes care of displaying data in the correct format (e.g. all the dates in the ISO standard).<br>
+3. <strong>Enable/disable the microdata</strong> semantics.<br>
+4. <strong>Fallbacks</strong>, you should never lose any meaningful semantic (e.g. if you switch the page type and it doesn’t have an author property it will fallback to the Person type with the name property).  </p>
+
+<h2>
+<a name="example" class="anchor" href="#example"><span class="octicon octicon-link"></span></a>Example</h2>
+
+<p>Let's suppose that you allready use an istance of <code>$microdata = new PHPStructuredData($type);</code> the following code which is part of your article, and <strong>you've selected</strong> <code>$type="article"</code> <strong>the Article type</strong>.</p>
+
+<div class="highlight highlight-php"><pre><span class="o">&lt;</span><span class="nx">div</span> <span class="o">&lt;?</span><span class="nx">php</span> <span class="k">echo</span> <span class="nv">$microdata</span><span class="o">-&gt;</span><span class="na">displayScope</span><span class="p">();</span><span class="cp">?&gt;</span><span class="x">&gt;</span>
+<span class="x">    &lt;!-- Author of the content --&gt;</span>
+<span class="x">    &lt;span&gt;</span>
+<span class="x">        Written by </span><span class="cp">&lt;?php</span> <span class="k">echo</span> <span class="nv">$microdata</span><span class="o">-&gt;</span><span class="na">content</span><span class="p">(</span><span class="s1">'Alexandru Pruteanu'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">property</span><span class="p">(</span><span class="s1">'author'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">fallback</span><span class="p">(</span><span class="s1">'Person'</span><span class="p">,</span> <span class="s1">'name'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">display</span><span class="p">();</span><span class="cp">?&gt;</span><span class="x"></span>
+<span class="x">    &lt;/span&gt;</span>
+<span class="x">    &lt;!-- The content --&gt;</span>
+<span class="x">    </span><span class="cp">&lt;?php</span> <span class="k">echo</span> <span class="nv">$microdata</span><span class="o">-&gt;</span><span class="na">content</span><span class="p">(</span><span class="s1">'Here is the article text...'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">property</span><span class="p">(</span><span class="s1">'articleBody'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">display</span><span class="p">();</span><span class="cp">?&gt;</span><span class="x"></span>
+<span class="x">&lt;div&gt;</span>
+</pre></div>
+
+<p>It will render:</p>
+
+<div class="highlight highlight-html"><pre><span class="nt">&lt;div</span> <span class="na">itemscope</span> <span class="na">itemtype=</span><span class="s">'https://schema.org/Article'</span><span class="nt">&gt;</span>
+    <span class="c">&lt;!-- Author of the content --&gt;</span>
+    <span class="nt">&lt;span&gt;</span>
+        Written by
+        <span class="nt">&lt;span</span> <span class="na">itemprop=</span><span class="s">'author'</span> <span class="na">itemscope</span> <span class="na">itemtype=</span><span class="s">'https://schema.org/Person'</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;span</span> <span class="na">itemprop=</span><span class="s">'name'</span><span class="nt">&gt;</span>Alexandru Pruteanu<span class="nt">&lt;/span&gt;</span>
+        <span class="nt">&lt;/span&gt;</span>
+    <span class="nt">&lt;/span&gt;</span>
+    <span class="c">&lt;!-- The content --&gt;</span>
+    <span class="nt">&lt;span</span> <span class="na">itemprop=</span><span class="s">'articleBody'</span><span class="nt">&gt;</span>Here is the article text...<span class="nt">&lt;/span&gt;</span>
+<span class="nt">&lt;div&gt;</span>
+</pre></div>
+
+<p>Instead, if you decide to change the current Type, let's say <strong>you change in</strong> <code>$type="thing"</code>  <strong>the Thing type</strong>
+It will render:</p>
+
+<div class="highlight highlight-html"><pre><span class="nt">&lt;div</span> <span class="na">itemscope</span> <span class="na">itemtype=</span><span class="s">'https://schema.org/Thing'</span><span class="nt">&gt;</span>
+    <span class="c">&lt;!-- Author of the content --&gt;</span>
+    <span class="nt">&lt;span&gt;</span>
+        Written by
+        <span class="nt">&lt;span</span> <span class="na">itemscope</span> <span class="na">itemtype=</span><span class="s">'https://schema.org/Person'</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;span</span> <span class="na">itemprop=</span><span class="s">'name'</span><span class="nt">&gt;</span>Alexandru Pruteanu<span class="nt">&lt;/span&gt;</span>
+        <span class="nt">&lt;/span&gt;</span>
+    <span class="nt">&lt;/span&gt;</span>
+    <span class="c">&lt;!-- The content --&gt;</span>
+    Here is the article text...
+<span class="nt">&lt;div&gt;</span>
+</pre></div>
+
+<p>As you can see <code>Alexandru Pruteanu</code> <strong>fallbacks</strong> to the Person type, and there is no loss of information, even if the current Type doesn't have an <code>author</code> Property it will display important semantic information for the machines, the search engines know that there is a Person <code>Alexandru Pruteanu</code>. And everything is valid, done fast and automatically.
+Instead, if you don't need all that microdata information, <strong>you just disable that feature</strong> <code>$microdata-&gt;enable(false)</code>.
+It will render:</p>
+
+<div class="highlight highlight-html"><pre><span class="nt">&lt;div&gt;</span>
+    <span class="c">&lt;!-- Author of the content --&gt;</span>
+    <span class="nt">&lt;span&gt;</span>Written by Alexandru Pruteanu<span class="nt">&lt;/span&gt;</span>
+    <span class="c">&lt;!-- The content --&gt;</span>
+    Here is the article text...
+<span class="nt">&lt;div&gt;</span>
+</pre></div>
+
+<p>Once again everything is done by the library. You don't need 558 different overrides, you just play with the global params.</p>
+
+<h2>
+<a name="documentation" class="anchor" href="#documentation"><span class="octicon octicon-link"></span></a>Documentation</h2>
+
+<p><code>PHPStructuredData</code> library uses the <code>types.json</code> file to check and output validated Microdata semantics, that file was automatically created with the <a href="https://github.com/PAlexcom/Spider4Schema">https://github.com/PAlexcom/Spider4Schema</a> web crawler.   </p>
+
+<p>For further documentation on <code>PHPStructuredData</code> see <a href="http://docs.joomla.org/microdata">http://docs.joomla.org/microdata</a>    </p>
+
+<h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>First of all you need to make an instance of the library:  </p>
+
+<div class="highlight highlight-php"><pre><span class="o">&lt;?</span><span class="nx">php</span> <span class="nv">$microdata</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PHPMicrodata</span><span class="p">(</span><span class="s1">'Article'</span><span class="p">);</span> <span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+
+<p>So let's suppose that you have the following <em>string</em> which is part of your article and the current scope is <em>Article</em>:   </p>
+
+<div class="highlight highlight-php"><pre><span class="o">&lt;?</span><span class="nx">php</span> <span class="k">echo</span> <span class="s1">'Written by Alexandru Pruteanu'</span><span class="p">;</span> <span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+
+<p>And the microdata you need to add is an <em>author</em> property:   </p>
+
+<div class="highlight highlight-php"><pre><span class="o">&lt;?</span><span class="nx">php</span> <span class="k">echo</span> <span class="s1">'Written by '</span> <span class="o">.</span> <span class="nv">$microdata</span><span class="o">-&gt;</span><span class="na">content</span><span class="p">(</span><span class="s1">'Alexandru Pruteanu'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">property</span><span class="p">(</span><span class="s1">'author'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">fallback</span><span class="p">(</span><span class="s1">'Person'</span><span class="p">,</span> <span class="s1">'name'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">display</span><span class="p">();</span> <span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+
+<p>The library will display:  </p>
+
+<div class="highlight highlight-html"><pre>Written by  
+<span class="nt">&lt;span</span> <span class="na">itemprop=</span><span class="s">'author'</span> <span class="na">itemscope</span> <span class="na">itemtype=</span><span class="s">'https://schema.org/Person'</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;span</span> <span class="na">itemprop=</span><span class="s">'name'</span><span class="nt">&gt;</span>
+        Alexandru Pruteanu
+    <span class="nt">&lt;/span&gt;</span>
+<span class="nt">&lt;/span&gt;</span>
+</pre></div>
+
+<p>— What happens if the current scope is something else than <em>Article</em>, for example a <em>Product</em> scope, and the current scope doesn't have an author property?<br>
+Well it will fallback in:  </p>
+
+<div class="highlight highlight-html"><pre>Written by
+<span class="nt">&lt;span</span> <span class="na">itemscope</span> <span class="na">itemtype=</span><span class="s">'https://schema.org/Person'</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;span</span> <span class="na">itemprop=</span><span class="s">'name'</span><span class="nt">&gt;</span>
+        Alexandru Pruteanu
+    <span class="nt">&lt;/span&gt;</span>
+<span class="nt">&lt;/span&gt;</span>
+</pre></div>
+
+<p>— If I want to disable the microdata semantics output?<br>
+You can simply disable the microdata output by calling the following function:  </p>
+
+<div class="highlight highlight-php"><pre><span class="o">&lt;?</span><span class="nx">php</span> <span class="nv">$microdata</span><span class="o">-&gt;</span><span class="na">enable</span><span class="p">(</span><span class="k">false</span><span class="p">);</span> <span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
+
+<p>The library will display the following:   </p>
+
+<div class="highlight highlight-html"><pre>Written by Alexandru Pruteanu
+</pre></div>
+
+<h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>PHPStructuredData is licensed under the MIT License - see the LICENSE file for details.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">PHPStructureData maintained by <a href="https://github.com/PAlexcom">PAlexcom</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
