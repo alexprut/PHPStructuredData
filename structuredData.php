@@ -59,13 +59,6 @@ abstract class PHPStructuredData
 	protected $fallbackProperty = null;
 
 	/**
-	 * Used for checking if a Fallback must be used
-	 *
-	 * @var  string
-	 */
-	protected $fallback = false;
-
-	/**
 	 * Used for checking if the library output is enabled or disabled
 	 *
 	 * @var  boolean
@@ -119,7 +112,6 @@ abstract class PHPStructuredData
 		$this->property         = null;
 		$this->fallbackProperty = null;
 		$this->fallbackType     = null;
-		$this->fallback         = false;
 	}
 
 	/**
@@ -127,7 +119,7 @@ abstract class PHPStructuredData
 	 *
 	 * @param   boolean  $flag  Enable or disable the library output
 	 *
-	 * @return  PHPMicrodata  Instance of $this
+	 * @return  PHPStructuredData  Instance of $this
 	 */
 	public function enable($flag = true)
 	{
@@ -151,7 +143,7 @@ abstract class PHPStructuredData
 	 *
 	 * @param   string  $type  The $Type to be setup
 	 *
-	 * @return  PHPMicrodata  Instance of $this
+	 * @return  PHPStructuredData  Instance of $this
 	 */
 	public function setType($type)
 	{
@@ -187,7 +179,7 @@ abstract class PHPStructuredData
 	 *
 	 * @param   string  $property  The Property
 	 *
-	 * @return  PHPMicrodata  Instance of $this
+	 * @return  PHPStructuredData  Instance of $this
 	 */
 	public function property($property)
 	{
@@ -203,10 +195,6 @@ abstract class PHPStructuredData
 		if (static::isPropertyInType($this->type, $property))
 		{
 			$this->property = $property;
-		}
-		else
-		{
-			$this->fallback = true;
 		}
 
 		return $this;
@@ -228,7 +216,7 @@ abstract class PHPStructuredData
 	 * @param   string  $content         The human content or machine content to be used
 	 * @param   string  $machineContent  The machine content
 	 *
-	 * @return  PHPMicrodata  Instance of $this
+	 * @return  PHPStructuredData  Instance of $this
 	 */
 	public function content($content, $machineContent = null)
 	{
@@ -264,7 +252,7 @@ abstract class PHPStructuredData
 	 * @param   string  $type      The Fallback Type
 	 * @param   string  $property  The Fallback Property
 	 *
-	 * @return  PHPMicrodata  Instance of $this
+	 * @return  PHPStructuredData  Instance of $this
 	 */
 	public function fallback($type, $property)
 	{
@@ -340,7 +328,7 @@ abstract class PHPStructuredData
 		}
 
 		// If the $property is wrong for the current $Type check if a Fallback is available, otherwise return an empty HTML
-		if ($this->property && !$this->fallback)
+		if ($this->property)
 		{
 			// Process and return the HTML the way the user expects to
 			if ($displayType)
