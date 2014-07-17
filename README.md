@@ -15,7 +15,7 @@ The library was designed with this goals in mind:
 
 Class diagram
 -------------
-![Class Diagram](https://palexcom.github.io/PHPStructuredData/images/classdiagram.png)
+![Class Diagram](https://palexcom.github.io/PHPStructuredData/images/classdiagram-v1.1.0.png)
 
 Example
 -------
@@ -136,10 +136,97 @@ Both ```PHPMicrodata``` and ```PHPRDFa``` library will render:
     Lorem ipsum dolor sit amet...
 <div>
 ```
+ParserPlugin
+------------
+If you want to keep your views separated from the logic, ```ParserPlugin``` is a PHP class for parsing the HTML markup and convert the ```data-*``` HTML5 attributes in Microdata or RDFa Lite 1.1 semantics.  
+
+The ```data-*``` attributes are new in HTML5, they gives us the ability to embed custom data attributes on all HTML elements. So if you disable the library output, the HTML will still be validated.  
+   
+##### Syntax
+![ParserPlugin Syntax](https://palexcom.github.io/PHPStructuredData/images/parser-plugin-syntax-v1.1.0.png)
+
+Let's suppose that you already have an instance of the ```ParserPlugin``` library. And you need to add Microdata or RDFa semantics to the following HTML which is part of an article (_e.g._ ```$parser = new ParserPlugin('microdata');```).
+```html
+<div data-sd="Article">
+    <!-- Title -->
+    <span data-sd="name">
+        How to Tie a Reef Knot
+    </span>
+    <!-- Author -->
+    <span data-sd="author">
+        Written by
+        <span data-sd="Person">
+            <span data-sd="name">John Doe</span>
+        </span>
+    </span>
+    <!-- Date published -->
+    <meta data-sd='Article.datePublished' content='2014-01-01T00:00:00+00:00'/>1 January 2014
+    <!-- Content -->
+    <span data-sd='articleBody'>
+        Lorem ipsum dolor sit amet...
+    </span>
+<div>
+```
+The ```Microdata``` output will be:
+```html
+<div itemscope itemtype='https://schema.org/Article'>
+    <!-- Title -->
+    <span itemprop='name'>
+        How to Tie a Reef Knot
+    </span>
+    <!-- Author -->
+    <span itemprop='author'>
+        Written by
+        <span itemscope itemtype='https://schema.org/Person'>
+            <span itemprop='name'>John Doe</span>
+        </span>
+    </span>
+    <!-- Date published -->
+    <meta itemprop='datePublished' content='2014-01-01T00:00:00+00:00'/>1 January 2014
+    <!-- Content -->
+    <span itemprop='articleBody'>
+        Lorem ipsum dolor sit amet...
+    </span>
+<div>
+```
+The ```RDFa``` output will be:
+```html
+<div vocab='https://schema.org' typeof='Article'>
+    <!-- Title -->
+    <span property='name'>
+        How to Tie a Reef Knot
+    </span>
+    <!-- Author -->
+    <span property='author'>
+        Written by
+        <span vocab='https://schema.org' typeof='Person'>
+            <span property='name'>John Doe</span>
+        </span>
+    </span>
+    <!-- Date published -->
+    <meta property='datePublished' content='2014-01-01T00:00:00+00:00'/>1 January 2014
+    <!-- Content -->
+    <span property='articleBody'>
+        Lorem ipsum dolor sit amet...
+    </span>
+<div>
+```
+Currently the ```ParserPlugin``` library doesn't support fallbacks or nested displays.
 
 Documentation
 -------------
 ```PHPStructuredData``` libraries use the ```types.json``` file to check and output validated semantics, that file contains all the available Types and Properties from the http://schema.org vocabulary, and it was generated automatically with the https://github.com/PAlexcom/Spider4Schema web crawler.
+
+Todos
+-----
+##### PHPStructuredData  
+* Add ```itemref``` support.
+* Add multiple fallbacks support.
+* Add to the ```types.json``` all the required properties specified by Google, Yandex, Baidu.
+
+##### ParserPlugin  
+* Add multiple data-suffix support.
+* Add fallbacks support.
 
 License
 -------
