@@ -204,6 +204,13 @@ class ParserPluginTest extends PHPUnit_Framework_TestCase
 			"<tag itemprop='author'>$content</tag>"
 		);
 
+		// Test self-closing tag parse: data-*="datePublished"
+		$html = "<meta data-sd='datePublished' content='2014-01-01T00:00:00+00:00' />";
+		$this->assertEquals(
+			$this->handler->parse($html),
+			"<meta itemprop='datePublished' content='2014-01-01T00:00:00+00:00' />"
+		);
+
 		// Test tag parse: data-*="Article.propertyDoesNotExist"
 		$html = "<tag data-sd='Article.propertyDoesNotExist'>$content</tag>";
 		$this->assertEquals(
