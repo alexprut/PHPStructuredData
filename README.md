@@ -140,7 +140,7 @@ ParserPlugin
 ------------
 If you want to keep your views separated from the logic, ```ParserPlugin``` is a PHP class for parsing the HTML markup and convert the ```data-*``` HTML5 attributes in Microdata or RDFa Lite 1.1 semantics.  
 
-The ```data-*``` attributes are new in HTML5, they gives us the ability to embed custom data attributes on all HTML elements. So if you disable the library output, the HTML will still be validated.  
+The ```data-*``` attributes are new in HTML5, they gives us the ability to embed custom data attributes on all HTML elements. So if you disable the library output, the HTML will still be validated. The default suffix the library will search for is ```data-sd```, but you can register more than one custom suffix.   
    
 ##### Syntax
 ![ParserPlugin Syntax](https://palexcom.github.io/PHPStructuredData/images/parser-plugin-syntax-v1.1.0.png)
@@ -225,7 +225,6 @@ Todos
 * Add to the ```types.json``` all the required properties specified by Google, Yandex, Baidu.
 
 ##### ParserPlugin  
-* Add multiple data-suffix support.
 * Add fallbacks support.
 
 License

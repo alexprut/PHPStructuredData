@@ -70,9 +70,25 @@ class ParserPluginTest extends PHPUnit_Framework_TestCase
 		 */
 		$this->handler->suffix('');
 
-		// Convert to lowercase
+		// Test string input, convert to lowercase if if necessary
 		$this->handler->suffix('lowercaseSuffix');
-		$this->assertEquals($this->handler->getSuffix(), 'lowercasesuffix');
+		$this->assertContains('lowercasesuffix', $this->handler->getSuffix());
+
+		// Test array input
+		$this->handler->suffix(array('su', 'ff', 'ix'));
+		$this->assertContains(array('su', 'ff', 'ix'), $this->handler->getSuffix());
+	}
+
+	/**
+	 * Test the removeSuffix() function
+	 *
+	 * @return  void
+	 */
+	public function testRemoveSuffix()
+	{
+		$this->handler->suffix('anything');
+		$this->handler->removeSuffix('anything');
+		$this->assertNotContains('anything', $this->handler->getSuffix());
 	}
 
 	/**
@@ -82,7 +98,7 @@ class ParserPluginTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testGetSuffix()
 	{
-		$this->assertInternalType('string', $this->handler->getSuffix());
+		$this->assertInternalType('array', $this->handler->getSuffix());
 	}
 
 	/**
@@ -223,6 +239,28 @@ class ParserPluginTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals(
 			$this->handler->parse($html),
 			"<tag >$content</tag>"
+		);
+
+		// Test multiple suffix tag parse
+		$this->handler->suffix('custom');
+		$html = "<tag data-custom='Article.author'>$content</tag><tag data-sd='url'>$content</tag>";
+		$this->assertEquals(
+			$this->handler->parse($html),
+			"<tag itemprop='author'>$content</tag><tag itemprop='url'>$content</tag>"
+		);
+
+		// Test multiple suffix tag parse, check that replaces only the first match
+		$html = "<tag data-sd='Article.author' data-custom='Article.name'>$content</tag>";
+		$this->assertEquals(
+			$this->handler->parse($html),
+			"<tag itemprop='author' data-custom='Article.name'>$content</tag>"
+		);
+
+		// Test that it doesn't parse an unregistered suffix
+		$html = "<tag data-unregistered='Article.author'>$content</tag>";
+		$this->assertEquals(
+			$this->handler->parse($html),
+			"<tag data-unregistered='Article.author'>$content</tag>"
 		);
 	}
 

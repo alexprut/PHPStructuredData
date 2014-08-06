@@ -23,9 +23,9 @@ class ParserPlugin
 	/**
 	 * The suffix to search for when parsing the data-* HTML5 attribute
 	 *
-	 * @var string
+	 * @var array
 	 */
-	protected $suffix = 'sd';
+	protected $suffix = array('sd');
 
 	/**
 	 * Initialize the class and setup the default $semantic, Microdata or RDFa
@@ -99,12 +99,35 @@ class ParserPlugin
 	/**
 	 * Setup the $suffix to search for when parsing the data-* HTML5 attribute
 	 *
+	 * @param   mixed  $suffix  The suffix
+	 *
+	 * @throws LengthException
+	 * @return void
+	 */
+	public function suffix($suffix)
+	{
+		if (is_array($suffix))
+		{
+			while ($string = array_pop($suffix))
+			{
+				$this->addSuffix($string);
+			}
+
+			return $this;
+		}
+
+		$this->addSuffix($suffix);
+	}
+
+	/**
+	 * Add a new $suffix to search for when parsing the data-* HTML5 attribute
+	 *
 	 * @param   string  $string  The suffix
 	 *
 	 * @throws LengthException
 	 * @return void
 	 */
-	public function suffix($string)
+	protected function addSuffix($string)
 	{
 		$string = strtolower((string) $string);
 
@@ -114,7 +137,31 @@ class ParserPlugin
 			throw new LengthException('The suffix must be at least one character long');
 		}
 
-		$this->suffix = $string;
+		// Avoid adding a duplicate suffix
+		if (array_search($string, $this->suffix))
+		{
+			return;
+		}
+
+		// Add the new suffix
+		array_push($this->suffix, $string);
+	}
+
+	/**
+	 * Remove a $suffix entry
+	 *
+	 * @param   string  $string  The suffix
+	 *
+	 * @return void
+	 */
+	public function removeSuffix($string)
+	{
+		$string = strtolower((string) $string);
+
+		// Search and remove the suffix
+		unset(
+			$this->suffix[array_search($string, $this->suffix)]
+		);
 	}
 
 	/**
@@ -237,6 +284,27 @@ class ParserPlugin
 	}
 
 	/**
+	 * Find the first data-suffix attribute match available in the node
+	 * e.g. <tag data-one="suffix" data-two="suffix" /> will return 'one'
+	 *
+	 * @param   DOMElement  $node  The node to parse
+	 *
+	 * @return mixed
+	 */
+	protected function getNodeSuffix(DOMElement $node)
+	{
+		foreach ($this->suffix as $suffix)
+		{
+			if ($node->hasAttribute("data-$suffix"))
+			{
+				return $suffix;
+			}
+		}
+
+		return null;
+	}
+
+	/**
 	 * Parse the HTML and replace the data-* HTML5 attributes with Microdata or RDFa semantics
 	 *
 	 * @param   string  $html  The HTML to parse
@@ -255,21 +323,31 @@ class ParserPlugin
 		// Create a new DOMXPath, to make XPath queries
 		$xpath = new DOMXPath($doc);
 
-		// Search for the data-* HTML5 attributes
-		$nodeList = $xpath->query("//*[@data-" . $this->suffix . "]");
+		// Create the query pattern
+		$query = array();
 
+		foreach ($this->suffix as $suffix)
+		{
+			array_push($query, "//*[@data-" . $suffix . "]");
+		}
+
+		// Search for the data-* HTML5 attributes
+		$nodeList = $xpath->query(implode('|', $query));
+
+		// Replace each match
 		foreach ($nodeList as $node)
 		{
 			// Retrieve the params used to setup the PHPStructuredData library
-			$attribute  = $node->getAttribute('data-' . $this->suffix);
-			$params     = $this->parseParams($attribute);
+			$suffix    = $this->getNodeSuffix($node);
+			$attribute = $node->getAttribute("data-" . $suffix);
+			$params    = $this->parseParams($attribute);
 
 			// Generate the Microdata or RDFa semantic
-			$semantic   = $this->display($params);
+			$semantic  = $this->display($params);
 
 			// Replace the data-* HTML5 attributes with Microdata or RDFa semantics
-			$pattern    = '/data-' . $this->suffix . "=." . $attribute . "./";
-			$html       = preg_replace($pattern, $semantic, $html, 1);
+			$pattern   = '/data-' . $suffix . "=." . $attribute . "./";
+			$html      = preg_replace($pattern, $semantic, $html, 1);
 		}
 
 		return $html;
