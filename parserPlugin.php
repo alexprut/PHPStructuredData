@@ -103,7 +103,6 @@ class ParserPlugin
 	 *
 	 * @param   mixed  $suffix  The suffix
 	 *
-	 * @throws LengthException
 	 * @return object
 	 */
 	public function suffix($suffix)
@@ -128,21 +127,14 @@ class ParserPlugin
 	 *
 	 * @param   string  $string  The suffix
 	 *
-	 * @throws LengthException
 	 * @return void
 	 */
 	protected function addSuffix($string)
 	{
-		$string = strtolower((string) $string);
+		$string = trim(strtolower((string) $string));
 
-		// The suffix must be at least one character long
-		if (empty($string))
-		{
-			throw new LengthException('The suffix must be at least one character long');
-		}
-
-		// Avoid adding a duplicate suffix
-		if (array_search($string, $this->suffix))
+		// Avoid adding a duplicate suffix, also the suffix must be at least one character long
+		if (array_search($string, $this->suffix) || empty($string))
 		{
 			return;
 		}

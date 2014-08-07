@@ -15,13 +15,15 @@ The library was designed with this goals in mind:
 
 Class diagram
 -------------
-![Class Diagram](https://palexcom.github.io/PHPStructuredData/images/classdiagram-v1.1.0.png)
+![Class Diagram](https://palexcom.github.io/PHPStructuredData/images/classdiagram-v1.3.0.png)
 
 Example
 -------
 Let's suppose that you already have an instance of the Microdata or RDFa library. And you need to add Microdata or RDFa semantics to the following HTML which is part of an article (_e.g._ ```$sd = new PHPMicrodata('Article');```).
 ```php
 <div <?php echo $sd->displayScope();?>>
+    <!-- Language -->
+    <?php echo $sd->content(null, 'en-GB')->property('inLanguage')->display('meta', true)?>
     <!-- Title -->
     <?php echo $sd->content('How to Tie a Reef Knot')->property('name')->display();?>
 	<!-- Author-->
@@ -37,6 +39,8 @@ Let's suppose that you already have an instance of the Microdata or RDFa library
 The ```PHPMicrodata``` library will render:
 ```html
 <div itemscope itemtype='https://schema.org/Article'>
+    <!-- Language -->
+    <meta itemprop='inLanguage' content='en-GB'/>
     <!-- Title -->
     <span itemprop='name'>
         How to Tie a Reef Knot
@@ -59,6 +63,8 @@ The ```PHPMicrodata``` library will render:
 The ```PHPRDFa``` library will render:
 ```html
 <div vocab='https://schema.org' typeof='Article'>
+    <!-- Language -->
+    <meta property='inLanguage' content='en-GB'/>
     <!-- Title -->
     <span property='name'>
         How to Tie a Reef Knot
@@ -82,6 +88,7 @@ Instead, if you decide to change the current Type (_e.g._ ```$sd->setType('Thing
 The ```PHPMicrodata``` library will render:
 ```html
 <div itemscope itemtype='https://schema.org/Thing'>
+    <!-- Language -->
     <!-- Title -->
     <span itemprop='name'>
         How to Tie a Reef Knot
@@ -102,6 +109,7 @@ The ```PHPMicrodata``` library will render:
 The ```PHPRDFa``` library will render:
 ```html
 <div vocab='https://schema.org' typeof='Thing'>
+    <!-- Language -->
     <!-- Title -->
     <span itemprop='name'>
         How to Tie a Reef Knot
@@ -124,6 +132,7 @@ Instead, if you decide to not render Microdata or RDFa semantics, you just __dis
 Both ```PHPMicrodata``` and ```PHPRDFa``` library will render:
 ```html
 <div >
+    <!-- Language -->
     <!-- Title -->
     How to Tie a Reef Knot
 	<!-- Author-->
@@ -136,6 +145,8 @@ Both ```PHPMicrodata``` and ```PHPRDFa``` library will render:
     Lorem ipsum dolor sit amet...
 <div>
 ```
+Currently both ```PHPRDFa``` and ```PHPMicrodata``` library doesn't support multiple fallbacks.
+
 ParserPlugin
 ------------
 If you want to keep your views separated from the logic, ```ParserPlugin``` is a PHP class for parsing the HTML markup and convert the ```data-*``` HTML5 attributes in Microdata or RDFa Lite 1.1 semantics.  
@@ -143,7 +154,7 @@ If you want to keep your views separated from the logic, ```ParserPlugin``` is a
 The ```data-*``` attributes are new in HTML5, they gives us the ability to embed custom data attributes on all HTML elements. So if you disable the library output, the HTML will still be validated. The default suffix the library will search for is ```data-sd```, but you can register more than one custom suffix.   
    
 ##### Syntax
-![ParserPlugin Syntax](https://palexcom.github.io/PHPStructuredData/images/parser-plugin-syntax-v1.1.0.png)
+![ParserPlugin Syntax](https://palexcom.github.io/PHPStructuredData/images/parser-plugin-syntax-v1.3.0.png)
 
 Let's suppose that you already have an instance of the ```ParserPlugin``` library. And you need to add Microdata or RDFa semantics to the following HTML which is part of an article (_e.g._ ```$parser = new ParserPlugin('microdata');```).
 ```html
@@ -211,7 +222,6 @@ The ```RDFa``` output will be:
     </span>
 <div>
 ```
-Currently the ```ParserPlugin``` library doesn't support fallbacks or nested displays.
 
 Documentation
 -------------
@@ -225,7 +235,7 @@ Todos
 * Add to the ```types.json``` all the required properties specified by Google, Yandex, Baidu.
 
 ##### ParserPlugin  
-* Add fallbacks support.
+* Add nested displays support.
 
 License
 -------

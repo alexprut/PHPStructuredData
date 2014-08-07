@@ -316,7 +316,7 @@ abstract class PHPStructuredData
 	public function display($displayType = '', $emptyOutput = false)
 	{
 		// Initialize the HTML to output
-		$html = ($this->content !== null) ? $this->content : '';
+		$html = ($this->content !== null && !$emptyOutput) ? $this->content : '';
 
 		// Control if the library output is enabled, otherwise return the $content or an empty string
 		if (!$this->enabled)
@@ -324,7 +324,7 @@ abstract class PHPStructuredData
 			// Reset params
 			$this->resetParams();
 
-			return ($emptyOutput) ? '' : $html;
+			return $html;
 		}
 
 		// If the $property is wrong for the current $Type check if a Fallback is available, otherwise return an empty HTML

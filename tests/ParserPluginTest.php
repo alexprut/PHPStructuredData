@@ -58,8 +58,6 @@ class ParserPluginTest extends PHPUnit_Framework_TestCase
 	/**
 	 * Test the suffix() function
 	 *
-	 * @expectedException LengthException
-	 *
 	 * @return  void
 	 */
 	public function testSuffix()
@@ -69,14 +67,16 @@ class ParserPluginTest extends PHPUnit_Framework_TestCase
 		 * and must be at least one character long after the prefix "data-"
 		 */
 		$this->handler->suffix('');
+		$this->assertNotContains('', $this->handler->getSuffix());
 
 		// Test string input, convert to lowercase if if necessary
 		$this->handler->suffix('lowercaseSuffix');
 		$this->assertContains('lowercasesuffix', $this->handler->getSuffix());
 
 		// Test array input
-		$this->handler->suffix(array('su', 'ff', 'ix'));
-		$this->assertContains(array('su', 'ff', 'ix'), $this->handler->getSuffix());
+		$this->handler->suffix(array('su', 'ff'));
+		$this->assertContains('su', $this->handler->getSuffix());
+		$this->assertContains('ff', $this->handler->getSuffix());
 	}
 
 	/**

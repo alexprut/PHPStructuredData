@@ -218,6 +218,14 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 			"<meta itemprop='datePublished' content='$machineContent'/>$content"
 		);
 
+		// Test when if fallbacks that the library returns an empty string as specified
+		$response = $this->handler
+			->content('en-GB')
+			->property('doesNotExist')
+			->display('meta', true);
+
+		$this->assertEquals($response, '');
+
 		// Test if the library is disabled
 		$response = $this->handler->enable(false)
 			->content($content)
