@@ -102,6 +102,62 @@ class ParserPluginTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * Test the parseParam() function
+	 *
+	 * @return  void
+	 */
+	public function testParseParam()
+	{
+		// Setup
+		$method = self::getMethod('parseParam');
+
+		// Test a complete params string
+		$this->assertEquals(
+			$method->invokeArgs(null, array('Type.property')),
+			array(
+				'type' => 'Type',
+				'property' => 'property'
+			)
+		);
+
+		// Test with only the Type param
+		$this->assertEquals(
+			$method->invokeArgs(null, array(' Type')),
+			array(
+				'type' => 'Type',
+				'property' => null
+			)
+		);
+
+		// Test with only the property param
+		$this->assertEquals(
+			$method->invokeArgs(null, array('property')),
+			array(
+				'type' => null,
+				'property' => 'property'
+			)
+		);
+
+		// Test a strange behaviour
+		$this->assertEquals(
+			$method->invokeArgs(null, array('.Type.property')),
+			array(
+				'type' => null,
+				'property' => null
+			)
+		);
+
+		// Test an empty string
+		$this->assertEquals(
+			$method->invokeArgs(null, array(' ')),
+			array(
+				'type' => null,
+				'property' => null
+			)
+		);
+	}
+
+	/**
 	 * Test the parseParams() function
 	 *
 	 * @return  void
@@ -111,14 +167,21 @@ class ParserPluginTest extends PHPUnit_Framework_TestCase
 		// Setup
 		$method = self::getMethod('parseParams');
 
-		// Test a complete params string
+		// Test a complete complex case (bad semantics practice, avoid in production!)
 		$this->assertEquals(
-			$method->invokeArgs(null, array('Type.property FallbackType.fallbackProperty')),
+			$method->invokeArgs(null, array('Type.property sProperty Type FType.fProperty gProperty')),
 			array(
-				'type' => 'Type',
-				'property' => 'property',
-				'fallbackType' => 'FallbackType',
-				'fallbackProperty' => 'fallbackProperty'
+				'setType'   => 'Type',
+				'fallbacks' => array(
+					'specialized' => array(
+						'Type'  => 'property',
+						'FType' => 'fProperty'
+					),
+					'global' => array(
+						'sProperty',
+						'gProperty'
+					)
+				)
 			)
 		);
 
@@ -126,10 +189,11 @@ class ParserPluginTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals(
 			$method->invokeArgs(null, array(' Type')),
 			array(
-				'type' => 'Type',
-				'property' => null,
-				'fallbackType' => null,
-				'fallbackProperty' => null
+				'setType'   => 'Type',
+				'fallbacks' => array(
+					'specialized' => array(),
+					'global' => array()
+				)
 			)
 		);
 
@@ -137,54 +201,61 @@ class ParserPluginTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals(
 			$method->invokeArgs(null, array('property')),
 			array(
-				'type' => null,
-				'property' => 'property',
-				'fallbackType' => null,
-				'fallbackProperty' => null
+				'setType'   => null,
+				'fallbacks' => array(
+					'specialized' => array(),
+					'global' => array('property')
+				)
 			)
 		);
 
 		// Test with only the property and fallbacks params
 		$this->assertEquals(
-			$method->invokeArgs(null, array('property FallbackType.fallbackProperty')),
+			$method->invokeArgs(null, array('property FType.fProperty')),
 			array(
-				'type' => null,
-				'property' => 'property',
-				'fallbackType' => 'FallbackType',
-				'fallbackProperty' => 'fallbackProperty'
+				'setType'   => null,
+				'fallbacks' => array(
+					'specialized' => array(
+						'FType'  => 'fProperty'
+					),
+					'global' => array('property')
+				)
 			)
 		);
 
 		// Test with only the Type and fallbacksProperty params
 		$this->assertEquals(
-			$method->invokeArgs(null, array('Type fallbackProperty')),
+			$method->invokeArgs(null, array('Type fProperty')),
 			array(
-				'type' => 'Type',
-				'property' => null,
-				'fallbackType' => null,
-				'fallbackProperty' => 'fallbackProperty'
+				'setType'   => 'Type',
+				'fallbacks' => array(
+					'specialized' => array(),
+					'global' => array('fProperty')
+				)
 			)
 		);
 
 		// Test a strange behaviour
 		$this->assertEquals(
-			$method->invokeArgs(null, array('.Type.property FallbackType. fallbackProperty')),
+			$method->invokeArgs(null, array(' .Type.property FType GType.  fProperty')),
 			array(
-				'type' => null,
-				'property' => null,
-				'fallbackType' => 'FallbackType',
-				'fallbackProperty' => null
+				'setType'   => 'FType',
+				'fallbacks' => array(
+					'specialized' => array(),
+					'global' => array('fProperty')
+				)
 			)
 		);
 
-		// Test with an empty string
+		// Test an empty string
 		$this->assertEquals(
 			$method->invokeArgs(null, array(' ')),
 			array(
-				'type' => null,
-				'property' => null,
-				'fallbackType' => null,
-				'fallbackProperty' => null
+				'setType'   => null,
+				'fallbacks' => array(
+					'specialized' => array(),
+					'global' => array()
+				)
 			)
 		);
 	}
@@ -199,29 +270,57 @@ class ParserPluginTest extends PHPUnit_Framework_TestCase
 		// Setup
 		$content = 'content';
 
-		// Test tag parse: data-*="Article.author"
-		$html = "<tag data-sd='Article.author'>$content</tag>";
+		// Test a complete complex case (bad semantics practice, avoid in production!)
+		$html = "<tag data-sd='articleBody Article Event.sameAs Person.award Article.url Person name'>$content</tag>";
 		$this->assertEquals(
 			$this->handler->parse($html),
-			"<tag itemprop='author'>$content</tag>"
+			"<tag itemprop='url'>$content</tag>"
 		);
 
-		// Test tag parse: data-*="Article"
+		// Test it displays the scope and set the current Type, tag parse: data-*="Article"
 		$html = "<tag data-sd='Article'>$content</tag>";
 		$this->assertEquals(
 			$this->handler->parse($html),
 			"<tag itemscope itemtype='https://schema.org/Article'>$content</tag>"
 		);
 
-		// Test tag parse: data-*="author"
+		// Test a 'specialized' fallback, tag parse: data-*="Article.author"
+		$html = "<tag data-sd='Article.author'>$content</tag>";
+		$this->assertEquals(
+			$this->handler->parse($html),
+			"<tag itemprop='author'>$content</tag>"
+		);
+
+		// Test a 'global' property, tag parse: data-*="author"
 		$html = "<tag data-sd='author'>$content</tag>";
 		$this->assertEquals(
 			$this->handler->parse($html),
 			"<tag itemprop='author'>$content</tag>"
 		);
 
+		// Test a strange behaviour, should set the current Type and display the scope with the last match, tag parse: data-*="Article Person"
+		$html = "<tag data-sd='Article Person'>$content</tag>";
+		$this->assertEquals(
+			$this->handler->parse($html),
+			"<tag itemscope itemtype='https://schema.org/Article'>$content</tag>"
+		);
+
+		// Test it displays the 'specialized' fallback instead of the 'global' fallback, tag parse: data-*="Article.articleBody description"
+		$html = "<tag data-sd='Article.articleBody description'>$content</tag>";
+		$this->assertEquals(
+			$this->handler->parse($html),
+			"<tag itemprop='articleBody'>$content</tag>"
+		);
+
+		// Test check the 'global' fallbacks order, tag parse: data-*="description articleBody"
+		$html = "<tag data-sd='description articleBody'>$content</tag>";
+		$this->assertEquals(
+			$this->handler->parse($html),
+			"<tag itemprop='description'>$content</tag>"
+		);
+
 		// Test self-closing tag parse: data-*="datePublished"
-		$html = "<meta data-sd='datePublished' content='2014-01-01T00:00:00+00:00' />";
+		$html = "<meta data-sd='Article datePublished' content='2014-01-01T00:00:00+00:00' />";
 		$this->assertEquals(
 			$this->handler->parse($html),
 			"<meta itemprop='datePublished' content='2014-01-01T00:00:00+00:00' />"
