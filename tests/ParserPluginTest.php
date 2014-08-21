@@ -11,6 +11,11 @@ include_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'parserPlugin.ph
  */
 class ParserPluginTest extends PHPUnit_Framework_TestCase
 {
+	/**
+	 * Tested class handler
+	 *
+	 * @var object
+	 */
 	protected $handler;
 
 	/**
@@ -111,12 +116,33 @@ class ParserPluginTest extends PHPUnit_Framework_TestCase
 		// Setup
 		$method = self::getMethod('parseParam');
 
+		// Test a complete params string containing the expected Type
+		$this->assertEquals(
+			$method->invokeArgs(null, array('Type.property.EType')),
+			array(
+				'type' => 'Type',
+				'property' => 'property',
+				'expectedType' => 'EType'
+			)
+		);
+
 		// Test a complete params string
 		$this->assertEquals(
 			$method->invokeArgs(null, array('Type.property')),
 			array(
 				'type' => 'Type',
-				'property' => 'property'
+				'property' => 'property',
+				'expectedType' => null
+			)
+		);
+
+		// Test a params string containing the property and the expected type
+		$this->assertEquals(
+			$method->invokeArgs(null, array('property.EType')),
+			array(
+				'type' => null,
+				'property' => 'property',
+				'expectedType' => 'EType'
 			)
 		);
 
@@ -125,7 +151,8 @@ class ParserPluginTest extends PHPUnit_Framework_TestCase
 			$method->invokeArgs(null, array(' Type')),
 			array(
 				'type' => 'Type',
-				'property' => null
+				'property' => null,
+				'expectedType' => null
 			)
 		);
 
@@ -134,7 +161,8 @@ class ParserPluginTest extends PHPUnit_Framework_TestCase
 			$method->invokeArgs(null, array('property')),
 			array(
 				'type' => null,
-				'property' => 'property'
+				'property' => 'property',
+				'expectedType' => null
 			)
 		);
 
@@ -143,7 +171,8 @@ class ParserPluginTest extends PHPUnit_Framework_TestCase
 			$method->invokeArgs(null, array('.Type.property')),
 			array(
 				'type' => null,
-				'property' => null
+				'property' => null,
+				'expectedType' => null
 			)
 		);
 
@@ -152,7 +181,8 @@ class ParserPluginTest extends PHPUnit_Framework_TestCase
 			$method->invokeArgs(null, array(' ')),
 			array(
 				'type' => null,
-				'property' => null
+				'property' => null,
+				'expectedType' => null
 			)
 		);
 	}
@@ -169,17 +199,17 @@ class ParserPluginTest extends PHPUnit_Framework_TestCase
 
 		// Test a complete complex case (bad semantics practice, avoid in production!)
 		$this->assertEquals(
-			$method->invokeArgs(null, array('Type.property sProperty Type FType.fProperty gProperty')),
+			$method->invokeArgs(null, array('Type.property.EType sProperty.EType Type FType.fProperty gProperty')),
 			array(
 				'setType'   => 'Type',
 				'fallbacks' => array(
 					'specialized' => array(
-						'Type'  => 'property',
-						'FType' => 'fProperty'
+						'Type'  => array('property' => 'EType'),
+						'FType' => array('fProperty' => null)
 					),
 					'global' => array(
-						'sProperty',
-						'gProperty'
+						'sProperty' => 'EType',
+						'gProperty' => null
 					)
 				)
 			)
@@ -204,21 +234,25 @@ class ParserPluginTest extends PHPUnit_Framework_TestCase
 				'setType'   => null,
 				'fallbacks' => array(
 					'specialized' => array(),
-					'global' => array('property')
+					'global' => array('property' => null)
 				)
 			)
 		);
 
 		// Test with only the property and fallbacks params
 		$this->assertEquals(
-			$method->invokeArgs(null, array('property FType.fProperty')),
+			$method->invokeArgs(null, array('property.EType FType.fProperty')),
 			array(
 				'setType'   => null,
 				'fallbacks' => array(
 					'specialized' => array(
-						'FType'  => 'fProperty'
+						'FType'  => array(
+							'fProperty' => null
+						)
 					),
-					'global' => array('property')
+					'global' => array(
+						'property' => 'EType'
+					)
 				)
 			)
 		);
@@ -230,7 +264,9 @@ class ParserPluginTest extends PHPUnit_Framework_TestCase
 				'setType'   => 'Type',
 				'fallbacks' => array(
 					'specialized' => array(),
-					'global' => array('fProperty')
+					'global' => array(
+						'fProperty' => null
+					)
 				)
 			)
 		);
@@ -242,7 +278,9 @@ class ParserPluginTest extends PHPUnit_Framework_TestCase
 				'setType'   => 'FType',
 				'fallbacks' => array(
 					'specialized' => array(),
-					'global' => array('fProperty')
+					'global' => array(
+						'fProperty' => null
+					)
 				)
 			)
 		);
@@ -291,11 +329,25 @@ class ParserPluginTest extends PHPUnit_Framework_TestCase
 			"<tag itemprop='author'>$content</tag>"
 		);
 
+		// Test a 'specialized' fallback with an expected Type, tag parse: data-*="Article.author.Person"
+		$html = "<tag data-sd='Article.author.Person'>$content</tag>";
+		$this->assertEquals(
+			$this->handler->parse($html),
+			"<tag itemprop='author' itemscope itemtype='https://schema.org/Person'>$content</tag>"
+		);
+
 		// Test a 'global' property, tag parse: data-*="author"
-		$html = "<tag data-sd='author'>$content</tag>";
+		$html = "<tag data-sd='Article author'>$content</tag>";
 		$this->assertEquals(
 			$this->handler->parse($html),
 			"<tag itemprop='author'>$content</tag>"
+		);
+
+		// Test a 'global' property with an expected Type, tag parse: data-*="author"
+		$html = "<tag data-sd='author.Person'>$content</tag>";
+		$this->assertEquals(
+			$this->handler->parse($html),
+			"<tag itemprop='author' itemscope itemtype='https://schema.org/Person'>$content</tag>"
 		);
 
 		// Test a strange behaviour, should set the current Type and display the scope with the last match, tag parse: data-*="Article Person"

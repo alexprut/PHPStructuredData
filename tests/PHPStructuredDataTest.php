@@ -54,7 +54,7 @@ class PHPStructuredDataTest extends PHPUnit_Framework_TestCase
 			PHPStructuredData::isPropertyInType($type, 'aPropertyThatDoesNotExist')
 		);
 
-		// Test a Property in an unanvailable Type
+		// Test a Property in an unavailable Type
 		$this->assertFalse(
 			PHPStructuredData::isPropertyInType('aTypeThatDoesNotExist', 'aPropertyThatDoesNotExist')
 		);

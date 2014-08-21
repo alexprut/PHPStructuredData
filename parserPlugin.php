@@ -59,7 +59,7 @@ class ParserPlugin
 	 * @param   string  $type  The type of semantic to output, accepted types are 'Microdata' or 'RDFa'
 	 *
 	 * @throws ErrorException
-	 * @return object
+	 * @return ParserPlugin
 	 */
 	public function semantic($type)
 	{
@@ -103,7 +103,7 @@ class ParserPlugin
 	 *
 	 * @param   mixed  $suffix  The suffix
 	 *
-	 * @return object
+	 * @return  ParserPlugin
 	 */
 	public function suffix($suffix)
 	{
@@ -148,7 +148,7 @@ class ParserPlugin
 	 *
 	 * @param   string  $string  The suffix
 	 *
-	 * @return object
+	 * @return  ParserPlugin
 	 */
 	public function removeSuffix($string)
 	{
@@ -174,11 +174,12 @@ class ParserPlugin
 
 	/**
 	 * Parse the unit param that will be used to setup the PHPStructuredData class,
-	 * e.g. giving the following: $string = 'Type.property';
+	 * e.g. giving the following: $string = 'Type.property.EType';
 	 * will return an array:
 	 * array(
-	 *     'type'     => 'Type,
-	 *     'property' => 'property'
+	 *     'type'        => 'Type,
+	 *     'property'    => 'property'
+	 *     'expectedType => 'EType'
 	 * );
 	 *
 	 * @param   string  $string  The string to parse
@@ -190,7 +191,8 @@ class ParserPlugin
 		// The default array
 		$params = array(
 			'type' => null,
-			'property' => null
+			'property' => null,
+			'expectedType' => null
 		);
 
 		// Sanitize the $string and parse
@@ -202,22 +204,32 @@ class ParserPlugin
 			return $params;
 		}
 
-		// If the first letter is uppercase, then it should be the 'Type', otherwise it should be the 'property'
+		// If the first letter is uppercase, then the param string could be 'Type.property.EType', otherwise it should be the 'property.EType'
 		if (ctype_upper($string[0]{0}))
 		{
 			$params['type'] = $string[0];
+
+			// If the first letter is lowercase, then it should be the property, otherwise return
+			if (count($string) > 1 && !empty($string[1]) && ctype_lower($string[1]{0}))
+			{
+				$params['property'] = $string[1];
+
+				// If the first letter is uppercase, then it should be expected Type, otherwise return
+				if (count($string) > 2 && !empty($string[2]) && ctype_upper($string[2]{0}))
+				{
+					$params['expectedType'] = $string[2];
+				}
+			}
 		}
 		else
 		{
 			$params['property'] = $string[0];
 
-			return $params;
-		}
-
-		// If there is a string after the first '.dot', and it is lowercase, then it should be the 'property'
-		if (count($string) > 1 && !empty($string[1]) && ctype_lower($string[1]{0}))
-		{
-			$params['property'] = $string[1];
+			// If the first letter is uppercase, then it should be the expectedType
+			if (count($string) > 1 && !empty($string[1]) && ctype_upper($string[1]{0}))
+			{
+				$params['expectedType'] = $string[1];
+			}
 		}
 
 		return $params;
@@ -225,19 +237,20 @@ class ParserPlugin
 
 	/**
 	 * Parse the params that will be used to setup the PHPStructuredData class,
-	 * e.g giving the following: $string ='Type Type.property ... FType.fProperty gProperty';
+	 * e.g giving the following: $string ='Type Type.property.EType ... FType.fProperty gProperty.EType sProperty';
 	 * will return an array:
 	 * array(
 	 *     'setType'   => 'Type',
 	 *     'fallbacks' => array(
 	 *         'specialized' => array(
-	 *             'Type'  => 'property',
-	 *             'FType' => 'fproperty'
+	 *             'Type'  => array('property'  => 'EType'),
+	 *             'FType' => array('fproperty' => null)
 	 *             ...
 	 *         ),
 	 *         'global' => array(
 	 *              ...
-	 *             'gProperty'
+	 *             'gProperty' => 'EType',
+	 *             'sProperty' => null
 	 *         )
 	 *     )
 	 * );
@@ -266,9 +279,10 @@ class ParserPlugin
 		// Parse the small param chunks
 		foreach ($string as $match)
 		{
-			$tmp      = self::parseParam($match);
-			$type     = $tmp['type'];
-			$property = $tmp['property'];
+			$tmp          = self::parseParam($match);
+			$type         = $tmp['type'];
+			$property     = $tmp['property'];
+			$expectedType = $tmp['expectedType'];
 
 			// If a 'type' is available and there is no 'property', then it should be a 'setType'
 			if ($type && !$property && !$params['setType'])
@@ -279,13 +293,13 @@ class ParserPlugin
 			// If a 'property' is available and there is no 'type', then it should be a 'global' fallback
 			if (!$type && $property)
 			{
-				array_push($params['fallbacks']['global'], $property);
+				$params['fallbacks']['global'][$property] = $expectedType;
 			}
 
 			// If both 'type' and 'property' is available, then it should be a 'specialized' fallback
 			if ($type && $property && !array_key_exists($type, $params['fallbacks']['specialized']))
 			{
-				$params['fallbacks']['specialized'][$type] = $property;
+				$params['fallbacks']['specialized'][$type] = array($property => $expectedType);
 			}
 		}
 
@@ -297,10 +311,11 @@ class ParserPlugin
 	 *
 	 * @param   array  $params  The params used to setup the PHPStructuredData library
 	 *
-	 * @return string
+	 * @return  string
 	 */
 	protected function display($params)
 	{
+		$html       = '';
 		$setType    = $params['setType'];
 
 		// Specialized fallbacks
@@ -321,27 +336,58 @@ class ParserPlugin
 			return $this->handler->displayScope();
 		}
 
+		// Get the current Type
 		$currentType = $this->handler->getType();
 
 		// Check if there is an available 'specialized' fallback property for the current Type
 		if ($sFallbacks && array_key_exists($currentType, $sFallbacks))
 		{
-			return $this->handler->property($sFallbacks[$currentType])->display('inline');
+			$property     = key($sFallbacks[$currentType]);
+			$expectedType = $sFallbacks[$currentType][$property];
+
+			$html .= $this->handler->property($property)->display('inline');
+
+			// Check if an expected Type is available and it is valid
+			if ($expectedType
+				&& in_array($expectedType, PHPStructuredData::getExpectedTypes($currentType, $property)))
+			{
+				// Update the current Type
+				$this->handler->setType($expectedType);
+
+				// Display the scope
+				$html .= ' ' . $this->handler->displayScope();
+			}
+
+			return $html;
 		}
 
 		// Check if there is an available 'global' fallback property for the current Type
 		if ($gFallbacks)
 		{
-			foreach ($gFallbacks as $property)
+			foreach ($gFallbacks as $property => $expectedType)
 			{
+				// Check if the property is available in the current Type
 				if (PHPStructuredData::isPropertyInType($currentType, $property))
 				{
-					return $this->handler->property($property)->display('inline');
+					$html .= $this->handler->property($property)->display('inline');
+
+					// Check if an expected Type is available
+					if ($expectedType
+						&& in_array($expectedType, PHPStructuredData::getExpectedTypes($currentType, $property)))
+					{
+						// Update the current Type
+						$this->handler->setType($expectedType);
+
+						// Display the scope
+						$html .= ' ' . $this->handler->displayScope();
+					}
+
+					return $html;
 				}
 			}
 		}
 
-		return $this->handler->display('inline');
+		return $html;
 	}
 
 	/**
@@ -350,7 +396,7 @@ class ParserPlugin
 	 *
 	 * @param   DOMElement  $node  The node to parse
 	 *
-	 * @return mixed
+	 * @return  mixed
 	 */
 	protected function getNodeSuffix(DOMElement $node)
 	{

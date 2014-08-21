@@ -1,5 +1,5 @@
 PHPStructuredData [![Build Status](https://travis-ci.org/PAlexcom/PHPStructuredData.svg)](https://travis-ci.org/PAlexcom/PHPStructuredData)
-============
+=================
 A set of PHP libraries that use the http://schema.org vocabulary to implement and output Microdata or RDFa Lite 1.1 semantics.  
 This library is used in the Joomla CMS since version 3.2 (called [JMicrodata](https://github.com/joomla/joomla-cms/tree/master/libraries/joomla/microdata "JMicrodata")).  
 Created during the Google Summer of Code 2013 and 2014.
@@ -173,7 +173,7 @@ A combination between both _Type_ and _property_, separated by a dot. In short, 
 A combination between the previous 3 building blocks. The order of the building blocks isn't significant and a white space is used as a separator.  
 ##### The Algorithm:
 1. First the parser checks for __setTypes__. If one or more matches are found then the current global scope will be update with the first match. At this point if there are no specialized or global fallback properties the algorithm will finish and replace the params with the current scope. Otherwise continue to point 2.  
-2. The parser checks for __specialized fallback properties__. If one or more valid matches are found, then replace the params with the first match property and finish the algorithm. Otherwise go to point 3
+2. The parser checks for __specialized fallback properties__. If one or more valid matches are found, then the algorithm will finish and replace the params with the first match property. Otherwise go to point 3
 3. The parser checks for __global fallback properties__. If one or more valid matches are found, then replace the params with the first match property and finish the algorithm.
 
 ### Example
@@ -185,9 +185,9 @@ Let's suppose that you already have an instance of the ```ParserPlugin``` librar
         How to Tie a Reef Knot
     </span>
     <!-- Author -->
-    <span data-sd="author">
+    <span>
         Written by
-        <span data-sd="Person">
+        <span data-sd="author.Person">
             <span data-sd="name">John Doe</span>
         </span>
     </span>
@@ -207,9 +207,9 @@ The ```Microdata``` output will be:
         How to Tie a Reef Knot
     </span>
     <!-- Author -->
-    <span itemprop='author'>
+    <span>
         Written by
-        <span itemscope itemtype='https://schema.org/Person'>
+        <span itemprop='author' itemscope itemtype='https://schema.org/Person'>
             <span itemprop='name'>John Doe</span>
         </span>
     </span>
@@ -229,9 +229,9 @@ The ```RDFa``` output will be:
         How to Tie a Reef Knot
     </span>
     <!-- Author -->
-    <span property='author'>
+    <span>
         Written by
-        <span vocab='https://schema.org' typeof='Person'>
+        <span property='author' vocab='https://schema.org' typeof='Person'>
             <span property='name'>John Doe</span>
         </span>
     </span>
@@ -252,9 +252,9 @@ The ```Microdata``` output will be:
         How to Tie a Reef Knot
     </span>
     <!-- Author -->
-    <span itemprop='author'>
+    <span>
         Written by
-        <span itemscope itemtype='https://schema.org/Person'>
+        <span itemprop='author' itemscope itemtype='https://schema.org/Person'>
             <span itemprop='name'>John Doe</span>
         </span>
     </span>
@@ -274,9 +274,9 @@ The ```RDFa``` output will be:
         How to Tie a Reef Knot
     </span>
     <!-- Author -->
-    <span property='author'>
+    <span>
         Written by
-        <span vocab='https://schema.org' typeof='Person'>
+        <span property='author' vocab='https://schema.org' typeof='Person'>
             <span property='name'>John Doe</span>
         </span>
     </span>
@@ -299,9 +299,6 @@ Todos
 * Add ```itemref``` support.
 * Add multiple fallbacks support.
 * Add to the ```types.json``` all the required properties specified by Google, Yandex, Baidu.
-
-##### ParserPlugin  
-* Add nested displays support.
 
 License
 -------
