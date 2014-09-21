@@ -17,8 +17,25 @@ Class diagram
 -------------
 ![Class Diagram](https://palexcom.github.io/PHPStructuredData/images/classdiagram-v2.0.0.png)
 
-Example
--------
+Installation
+------------
+* __Composer__:  
+    Add in your ```composer.json``` file:
+
+    ``` json
+    {
+        "require": {
+            "palex/phpstructureddata": "*"
+        }
+    }
+    ```
+* __From Source__:  
+    Run ```git clone https://github.com/PAlexcom/PHPStructuredData.git```
+* __Direct download__:  
+    Download the last version from [here](https://github.com/PAlexcom/PHPStructuredData/archive/master.zip "download")
+
+Usage Example
+-------------
 Let's suppose that you already have an instance of the Microdata or RDFa library. And you need to add Microdata or RDFa semantics to the following HTML which is part of an article (_e.g._ ```$sd = new Microdata('Article');```).
 ```php
 <div <?php echo $sd->displayScope();?>>
@@ -155,7 +172,8 @@ If you want to keep your views separated from the logic, ```ParserPlugin``` is a
 
 The ```data-*``` attributes are new in HTML5, they gives us the ability to embed custom data attributes on all HTML elements. So if you disable the library output, the HTML will still be validated. The default suffix the library will search for is ```data-sd```, where sd stands for structured data, but you can register more than one custom suffix.   
    
-### Markup Syntax
+Markup Syntax
+-------------
 ##### setType
 ![ParserPlugin Syntax](https://palexcom.github.io/PHPStructuredData/images/parser-plugin-syntax-v1.3.0-setType.png)  
 The _type_ defines which schema is being used for the following markup.  The Type must always have the first character Uppercase to be correctly interpreted. If the type is a valid schema, the global scope for the page from this point onwards is updated to this schema. The plugin will replace the data tag with ```itemscope itemtype='https://schema.org/Type'``` in case of Microdata semantics or ```vocab='https://schema.org' typeof='Type'``` in case of RDFa Lite 1.1 semantics.  
@@ -308,7 +326,8 @@ Or using ```RDFa``` semantics as:
 2. The parser checks for __specific item properties__. If one or more valid matches are found, then the algorithm will finish and replace the data tag with the first match property. Otherwise go to point 3
 3. The parser checks for __generic properties__. If one or more valid matches are found, then the algorithm will replace the data tag with the first property that is matched, and complete the algorithm.
 
-### Example
+Usage Example
+-------------
 Let's suppose that you already have an instance of the ```ParserPlugin``` library. And you need to add Microdata or RDFa semantics to the following HTML which is part of an article (_e.g._ ```$parser = new ParserPlugin('microdata'); $scope='Article';```).
 ```html
 <div data-sd="<?php echo $scope;?>">
