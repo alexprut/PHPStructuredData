@@ -4,12 +4,14 @@
  * @license    Licensed under the MIT License; see LICENSE
  */
 
-include_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'microdata.php';
+include_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'src/microdata.php';
 
 /**
- * Test class for PHPMicrodata
+ * Test class for Microdata
+ *
+ * @since  1.0
  */
-class PHPMicrodataTest extends PHPUnit_Framework_TestCase
+class MicrodataTest extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * The default fallback Type
@@ -32,7 +34,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 	 */
 	public function setUp()
 	{
-		$this->handler = new PHPMicrodata;
+		$this->handler = new Microdata;
 	}
 
 	/**
@@ -42,12 +44,12 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testDefaults()
 	{
-		$this->handler = new PHPMicrodata;
+		$this->handler = new Microdata;
 
 		// Test that the default Type is 'Thing'
 		$this->assertEquals($this->handler->getType(), $this->defaultType);
 
-		$this->assertClassHasAttribute('types', 'PHPMicrodata');
+		$this->assertClassHasAttribute('types', 'Microdata');
 	}
 
 	/**
@@ -101,7 +103,7 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 		$content = 'anything';
 
 		// Test display() with all null params
-		$this->handler = new PHPMicrodata;
+		$this->handler = new Microdata;
 
 		$this->assertEquals($this->handler->display(), '');
 
@@ -442,19 +444,19 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 
 		// Test with all params
 		$this->assertEquals(
-			PHPMicrodata::htmlMeta($content, $property, $scope),
+			Microdata::htmlMeta($content, $property, $scope),
 			"<meta itemscope itemtype='https://schema.org/$scope' itemprop='$property' content='$content'/>"
 		);
 
 		// Test with the $inverse mode
 		$this->assertEquals(
-			PHPMicrodata::htmlMeta($content, $property, $scope, true),
+			Microdata::htmlMeta($content, $property, $scope, true),
 			"<meta itemprop='$property' itemscope itemtype='https://schema.org/$scope' content='$content'/>"
 		);
 
 		// Test without the $scope
 		$this->assertEquals(
-			PHPMicrodata::htmlMeta($content, $property),
+			Microdata::htmlMeta($content, $property),
 			"<meta itemprop='$property' content='$content'/>"
 		);
 	}
@@ -473,31 +475,31 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 
 		// Test with all params
 		$this->assertEquals(
-			PHPMicrodata::htmlDiv($content, $property, $scope),
+			Microdata::htmlDiv($content, $property, $scope),
 			"<div itemscope itemtype='https://schema.org/$scope' itemprop='$property'>$content</div>"
 		);
 
 		// Test with the $inverse mode
 		$this->assertEquals(
-			PHPMicrodata::htmlDiv($content, $property, $scope, true),
+			Microdata::htmlDiv($content, $property, $scope, true),
 			"<div itemprop='$property' itemscope itemtype='https://schema.org/$scope'>$content</div>"
 		);
 
 		// Test without the $scope
 		$this->assertEquals(
-			PHPMicrodata::htmlDiv($content, $property),
+			Microdata::htmlDiv($content, $property),
 			"<div itemprop='$property'>$content</div>"
 		);
 
 		// Test without the $property
 		$this->assertEquals(
-			PHPMicrodata::htmlDiv($content, $property, $scope, true),
+			Microdata::htmlDiv($content, $property, $scope, true),
 			"<div itemprop='$property' itemscope itemtype='https://schema.org/$scope'>$content</div>"
 		);
 
 		// Test without the $scope, $property
 		$this->assertEquals(
-			PHPMicrodata::htmlDiv($content),
+			Microdata::htmlDiv($content),
 			"<div>$content</div>"
 		);
 	}
@@ -516,31 +518,31 @@ class PHPMicrodataTest extends PHPUnit_Framework_TestCase
 
 		// Test with all params
 		$this->assertEquals(
-			PHPMicrodata::htmlSpan($content, $property, $scope),
+			Microdata::htmlSpan($content, $property, $scope),
 			"<span itemscope itemtype='https://schema.org/$scope' itemprop='$property'>$content</span>"
 		);
 
 		// Test with the inverse mode
 		$this->assertEquals(
-			PHPMicrodata::htmlSpan($content, $property, $scope, true),
+			Microdata::htmlSpan($content, $property, $scope, true),
 			"<span itemprop='$property' itemscope itemtype='https://schema.org/$scope'>$content</span>"
 		);
 
 		// Test without the $scope
 		$this->assertEquals(
-			PHPMicrodata::htmlSpan($content, $property),
+			Microdata::htmlSpan($content, $property),
 			"<span itemprop='$property'>$content</span>"
 		);
 
 		// Test without the $property
 		$this->assertEquals(
-			PHPMicrodata::htmlSpan($content, $property, $scope, true),
+			Microdata::htmlSpan($content, $property, $scope, true),
 			"<span itemprop='$property' itemscope itemtype='https://schema.org/$scope'>$content</span>"
 		);
 
 		// Test without the $scope, $property
 		$this->assertEquals(
-			PHPMicrodata::htmlSpan($content),
+			Microdata::htmlSpan($content),
 			"<span>$content</span>"
 		);
 	}

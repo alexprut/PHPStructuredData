@@ -8,8 +8,10 @@ include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'structuredData.php';
 
 /**
  * PHP class for interacting with Microdata semantics.
+ *
+ * @since  1.0
  */
-class PHPMicrodata extends PHPStructuredData
+class Microdata extends StructuredData
 {
 	/**
 	 * Return Microdata semantics in a <meta> tag with content for machines.

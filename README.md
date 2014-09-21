@@ -15,11 +15,11 @@ The library was designed with this goals in mind:
 
 Class diagram
 -------------
-![Class Diagram](https://palexcom.github.io/PHPStructuredData/images/classdiagram-v1.3.0.png)
+![Class Diagram](https://palexcom.github.io/PHPStructuredData/images/classdiagram-v2.0.0.png)
 
 Example
 -------
-Let's suppose that you already have an instance of the Microdata or RDFa library. And you need to add Microdata or RDFa semantics to the following HTML which is part of an article (_e.g._ ```$sd = new PHPMicrodata('Article');```).
+Let's suppose that you already have an instance of the Microdata or RDFa library. And you need to add Microdata or RDFa semantics to the following HTML which is part of an article (_e.g._ ```$sd = new Microdata('Article');```).
 ```php
 <div <?php echo $sd->displayScope();?>>
     <!-- Language -->
@@ -36,7 +36,7 @@ Let's suppose that you already have an instance of the Microdata or RDFa library
     <?php echo $sd->content('Lorem ipsum dolor sit amet...')->property('articleBody')->display();?>
 <div>
 ```
-The ```PHPMicrodata``` library will render:
+The ```Microdata``` library will render:
 ```html
 <div itemscope itemtype='https://schema.org/Article'>
     <!-- Language -->
@@ -60,7 +60,7 @@ The ```PHPMicrodata``` library will render:
     </span>
 <div>
 ```
-The ```PHPRDFa``` library will render:
+The ```RDFa``` library will render:
 ```html
 <div vocab='https://schema.org' typeof='Article'>
     <!-- Language -->
@@ -85,7 +85,7 @@ The ```PHPRDFa``` library will render:
 <div>
 ```
 Instead, if you decide to change the current Type (_e.g._ ```$sd->setType('Review');```).  
-The ```PHPMicrodata``` library will render:
+The ```Microdata``` library will render:
 ```html
 <div itemscope itemtype='https://schema.org/Review'>
     <!-- Language -->
@@ -107,7 +107,7 @@ The ```PHPMicrodata``` library will render:
     Lorem ipsum dolor sit amet...
 <div>
 ```
-The ```PHPRDFa``` library will render:
+The ```RDFa``` library will render:
 ```html
 <div vocab='https://schema.org' typeof='Review'>
     <!-- Language -->
@@ -131,7 +131,7 @@ The ```PHPRDFa``` library will render:
 ```
 As you can see ```John Doe``` __fallbacks__ to the _Person_ Type, and there is no loss of information, even if the current Type doesn't have an _author_ Property it will display important information for the machines, search engines know that there is a Person ```John Doe```.  
 Instead, if you decide to not render Microdata or RDFa semantics, you just __disable the library__ output (_e.g._ ```$sd->enable('false');```).  
-Both ```PHPMicrodata``` and ```PHPRDFa``` library will render:
+Both ```Microdata``` and ```RDFa``` library will render:
 ```html
 <div >
     <!-- Language -->
@@ -147,10 +147,10 @@ Both ```PHPMicrodata``` and ```PHPRDFa``` library will render:
     Lorem ipsum dolor sit amet...
 <div>
 ```
-Currently both ```PHPRDFa``` and ```PHPMicrodata``` library doesn't support multiple fallbacks.
+Currently both ```RDFa``` and ```Microdata``` library doesn't support multiple fallbacks.
 
 ParserPlugin
-------------
+============
 If you want to keep your views separated from the logic, ```ParserPlugin``` is a PHP class for parsing the HTML markup and converting the ```data-*``` HTML5 attributes into the correctly formatted Microdata or RDFa Lite 1.1 semantics.  
 
 The ```data-*``` attributes are new in HTML5, they gives us the ability to embed custom data attributes on all HTML elements. So if you disable the library output, the HTML will still be validated. The default suffix the library will search for is ```data-sd```, where sd stands for structured data, but you can register more than one custom suffix.   
@@ -274,7 +274,7 @@ Sometimes it is necessary to nest schemas – for example if you want to describ
     <p data-sd="articleBody">This is my article</p>
     <p data-sd="Article.wordcount">4</p>
     <div data-sd="author.Person">
-        <p data-sd="name">John Doe</p>
+        <p data-sd="Person name">John Doe</p>
     </div>
     <p data-sd="Article keywords">Cake</p>
 </div>
@@ -427,9 +427,9 @@ Documentation
 
 Todos
 -----
-##### PHPStructuredData  
+##### StructuredData  
 * Add ```itemref``` support.
-* Add multiple fallbacks support.
+* Add multiple fallbacks support to ```StructuredData```.
 * Add to the ```types.json``` all the required properties specified by Google, Yandex, Baidu.
 
 License

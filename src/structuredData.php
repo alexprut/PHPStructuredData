@@ -6,8 +6,10 @@
 
 /**
  * PHP abstract class for interacting with Microdata and RDFa Lite 1.1 semantics.
+ *
+ * @since  1.0
  */
-abstract class PHPStructuredData
+abstract class StructuredData
 {
 	/**
 	 * Array with all available Types and Properties from the http://schema.org vocabulary
@@ -119,7 +121,7 @@ abstract class PHPStructuredData
 	 *
 	 * @param   boolean  $flag  Enable or disable the library output
 	 *
-	 * @return  PHPStructuredData  Instance of $this
+	 * @return  StructuredData  Instance of $this
 	 */
 	public function enable($flag = true)
 	{
@@ -143,7 +145,7 @@ abstract class PHPStructuredData
 	 *
 	 * @param   string  $type  The $Type to be setup
 	 *
-	 * @return  PHPStructuredData  Instance of $this
+	 * @return  StructuredData  Instance of $this
 	 */
 	public function setType($type)
 	{
@@ -179,7 +181,7 @@ abstract class PHPStructuredData
 	 *
 	 * @param   string  $property  The Property
 	 *
-	 * @return  PHPStructuredData  Instance of $this
+	 * @return  StructuredData  Instance of $this
 	 */
 	public function property($property)
 	{
@@ -216,7 +218,7 @@ abstract class PHPStructuredData
 	 * @param   string  $content         The human content or machine content to be used
 	 * @param   string  $machineContent  The machine content
 	 *
-	 * @return  PHPStructuredData  Instance of $this
+	 * @return  StructuredData  Instance of $this
 	 */
 	public function content($content, $machineContent = null)
 	{
@@ -252,7 +254,7 @@ abstract class PHPStructuredData
 	 * @param   string  $type      The Fallback Type
 	 * @param   string  $property  The Fallback Property
 	 *
-	 * @return  PHPStructuredData  Instance of $this
+	 * @return  StructuredData  Instance of $this
 	 */
 	public function fallback($type, $property)
 	{

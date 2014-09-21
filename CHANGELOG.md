@@ -1,3 +1,6 @@
+### 2.0.0
+  * Composer support
+
 ### 1.4.0
 
   * ParserPlugin nested display support: e.g. 'Type.property.EType'

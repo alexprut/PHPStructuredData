@@ -4,10 +4,12 @@
  * @license    Licensed under the MIT License; see LICENSE
  */
 
-include_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'parserPlugin.php';
+include_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'src/parserPlugin.php';
 
 /**
  * Test class for ParserPlugin
+ *
+ * @since  1.1
  */
 class ParserPluginTest extends PHPUnit_Framework_TestCase
 {
@@ -40,10 +42,10 @@ class ParserPluginTest extends PHPUnit_Framework_TestCase
 		$this->handler = new ParserPlugin('doesNotExist');
 
 		$this->handler = new ParserPlugin('Microdata');
-		PHPUnit_Framework_Assert::assertAttributeInstanceOf('PHPMicrodata', 'handler', $this->handler);
+		PHPUnit_Framework_Assert::assertAttributeInstanceOf('Microdata', 'handler', $this->handler);
 
 		$this->handler = new ParserPlugin('RDFa');
-		PHPUnit_Framework_Assert::assertAttributeInstanceOf('PHPRDFa', 'handler', $this->handler);
+		PHPUnit_Framework_Assert::assertAttributeInstanceOf('RDFa', 'handler', $this->handler);
 	}
 
 	/**

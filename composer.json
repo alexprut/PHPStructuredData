@@ -1,0 +1,24 @@
+{
+	"name": "palex/phpstructureddata",
+	"type": "library",
+	"description": "A set of PHP libraries that use the http://schema.org vocabulary to implement and output Microdata or RDFa Lite 1.1 semantics.",
+	"keywords": ["schema.org","microdata","rdfa","rdfa lite","schema","seo","semantic"],
+	"homepage": "https://github.com/PAlexcom/PHPStructuredData",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "P.Alex (Alexandru Pruteanu)",
+			"email": "web.is.art@p-alex.com",
+			"homepage": "http://p-alex.com",
+			"role": "Web Engineer"
+		}
+	],
+	"require": {
+		"php": ">=5.3.0"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "*",
+		"phpunit/phpcov": "*",
+		"sebastian/phpcpd": "*"
+	}
+}

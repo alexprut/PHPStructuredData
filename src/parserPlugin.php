@@ -10,11 +10,13 @@ include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'microdata.php';
 /**
  * PHP class for parsing the HTML markup and
  * convert the data-* HTML5 attributes in Microdata or RDFa Lite 1.1 semantics
+ *
+ * @since  1.1
  */
 class ParserPlugin
 {
 	/**
-	 * The type of semantic, will be an instance of PHPMicrodata or PHPRDFa
+	 * The type of semantic, will be an instance of Microdata or RDFa
 	 *
 	 * @var null
 	 */
@@ -44,9 +46,9 @@ class ParserPlugin
 	}
 
 	/**
-	 * Return the $handler, which is an instance of PHPMicrodata or PHPRDFa
+	 * Return the $handler, which is an instance of Microdata or RDFa
 	 *
-	 * @return PHPStructuredData
+	 * @return StructuredData
 	 */
 	public function getHandler()
 	{
@@ -70,10 +72,10 @@ class ParserPlugin
 		switch ($type)
 		{
 			case 'microdata':
-				$this->handler = new PHPMicrodata;
+				$this->handler = new Microdata;
 				break;
 			case 'rdfa':
-				$this->handler = new PHPRDFa;
+				$this->handler = new RDFa;
 				break;
 			default:
 				throw new ErrorException('There is no ' . $type . ' library available');
@@ -90,7 +92,7 @@ class ParserPlugin
 	 */
 	public function getSemantic()
 	{
-		if ($this->handler instanceof PHPMicrodata)
+		if ($this->handler instanceof Microdata)
 		{
 			return 'microdata';
 		}
@@ -173,7 +175,7 @@ class ParserPlugin
 	}
 
 	/**
-	 * Parse the unit param that will be used to setup the PHPStructuredData class,
+	 * Parse the unit param that will be used to setup the StructuredData class,
 	 * e.g. giving the following: $string = 'Type.property.EType';
 	 * will return an array:
 	 * array(
@@ -236,7 +238,7 @@ class ParserPlugin
 	}
 
 	/**
-	 * Parse the params that will be used to setup the PHPStructuredData class,
+	 * Parse the params that will be used to setup the StructuredData class,
 	 * e.g giving the following: $string ='Type Type.property.EType ... FType.fProperty gProperty.EType sProperty';
 	 * will return an array:
 	 * array(
@@ -309,7 +311,7 @@ class ParserPlugin
 	/**
 	 * Generate the Microdata or RDFa semantics
 	 *
-	 * @param   array  $params  The params used to setup the PHPStructuredData library
+	 * @param   array  $params  The params used to setup the StructuredData library
 	 *
 	 * @return  string
 	 */
@@ -349,7 +351,7 @@ class ParserPlugin
 
 			// Check if an expected Type is available and it is valid
 			if ($expectedType
-				&& in_array($expectedType, PHPStructuredData::getExpectedTypes($currentType, $property)))
+				&& in_array($expectedType, StructuredData::getExpectedTypes($currentType, $property)))
 			{
 				// Update the current Type
 				$this->handler->setType($expectedType);
@@ -367,13 +369,13 @@ class ParserPlugin
 			foreach ($gFallbacks as $property => $expectedType)
 			{
 				// Check if the property is available in the current Type
-				if (PHPStructuredData::isPropertyInType($currentType, $property))
+				if (StructuredData::isPropertyInType($currentType, $property))
 				{
 					$html .= $this->handler->property($property)->display('inline');
 
 					// Check if an expected Type is available
 					if ($expectedType
-						&& in_array($expectedType, PHPStructuredData::getExpectedTypes($currentType, $property)))
+						&& in_array($expectedType, StructuredData::getExpectedTypes($currentType, $property)))
 					{
 						// Update the current Type
 						$this->handler->setType($expectedType);
@@ -444,7 +446,7 @@ class ParserPlugin
 		// Replace each match
 		foreach ($nodeList as $node)
 		{
-			// Retrieve the params used to setup the PHPStructuredData library
+			// Retrieve the params used to setup the StructuredData library
 			$suffix    = $this->getNodeSuffix($node);
 			$attribute = $node->getAttribute("data-" . $suffix);
 			$params    = $this->parseParams($attribute);

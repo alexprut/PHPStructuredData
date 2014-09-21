@@ -8,8 +8,10 @@ include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'structuredData.php';
 
 /**
  * PHP class for interacting with RDFa Lite 1.1 semantics.
+ *
+ * @since  1.0
  */
-class PHPRDFa extends PHPStructuredData
+class RDFa extends StructuredData
 {
 	/**
 	 * Return RDFa semantics in a <meta> tag with content for machines.

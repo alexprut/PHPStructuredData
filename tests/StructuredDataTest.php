@@ -4,12 +4,14 @@
  * @license    Licensed under the MIT License; see LICENSE
  */
 
-include_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'structuredData.php';
+include_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'src/structuredData.php';
 
 /**
- * Test class for PHPStructuredData
+ * Test class for StructuredData
+ *
+ * @since  1.0
  */
-class PHPStructuredDataTest extends PHPUnit_Framework_TestCase
+class StructuredDataTest extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * Test the isTypeAvailable() function
@@ -20,12 +22,12 @@ class PHPStructuredDataTest extends PHPUnit_Framework_TestCase
 	{
 		// Test if the function returns 'true' with an available $Type
 		$this->assertTrue(
-			PHPStructuredData::isTypeAvailable('Article')
+			StructuredData::isTypeAvailable('Article')
 		);
 
 		// Test if the function returns 'false' with an unavailable $Type
 		$this->assertFalse(
-			PHPStructuredData::isTypeAvailable('SomethingThatDoesNotExist')
+			StructuredData::isTypeAvailable('SomethingThatDoesNotExist')
 		);
 	}
 
@@ -41,22 +43,22 @@ class PHPStructuredDataTest extends PHPUnit_Framework_TestCase
 
 		// Test a $Property that is available in the $Type
 		$this->assertTrue(
-			PHPStructuredData::isPropertyInType($type, 'articleBody')
+			StructuredData::isPropertyInType($type, 'articleBody')
 		);
 
 		// Test an inherit $Property that is available in the $Type
 		$this->assertTrue(
-			PHPStructuredData::isPropertyInType($type, 'about')
+			StructuredData::isPropertyInType($type, 'about')
 		);
 
 		// Test a $Property that is unavailable in the $Type
 		$this->assertFalse(
-			PHPStructuredData::isPropertyInType($type, 'aPropertyThatDoesNotExist')
+			StructuredData::isPropertyInType($type, 'aPropertyThatDoesNotExist')
 		);
 
 		// Test a Property in an unavailable Type
 		$this->assertFalse(
-			PHPStructuredData::isPropertyInType('aTypeThatDoesNotExist', 'aPropertyThatDoesNotExist')
+			StructuredData::isPropertyInType('aTypeThatDoesNotExist', 'aPropertyThatDoesNotExist')
 		);
 	}
 
@@ -67,7 +69,7 @@ class PHPStructuredDataTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testGetAvailableTypes()
 	{
-		$response = PHPStructuredData::getAvailableTypes();
+		$response = StructuredData::getAvailableTypes();
 
 		$this->assertGreaterThan(500, count($response));
 		$this->assertNotEmpty($response);
@@ -113,7 +115,7 @@ class PHPStructuredDataTest extends PHPUnit_Framework_TestCase
 	 */
 	protected static function getMethod($name)
 	{
-		$class = new ReflectionClass('PHPStructuredData');
+		$class = new ReflectionClass('StructuredData');
 		$method = $class->getMethod($name);
 		$method->setAccessible(true);
 

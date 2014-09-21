@@ -4,12 +4,14 @@
  * @license    Licensed under the MIT License; see LICENSE
  */
 
-include_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'rdfa.php';
+include_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'src/rdfa.php';
 
 /**
- * Test class for PHPRDFa
+ * Test class for RDFa
+ *
+ * @since  1.1
  */
-class PHPRDFaTest extends PHPUnit_Framework_TestCase
+class RDFaTest extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * The default fallback Type
@@ -32,7 +34,7 @@ class PHPRDFaTest extends PHPUnit_Framework_TestCase
 	 */
 	public function setUp()
 	{
-		$this->handler = new PHPRDFa;
+		$this->handler = new RDFa;
 	}
 
 	/**
@@ -42,12 +44,12 @@ class PHPRDFaTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testDefaults()
 	{
-		$this->handler = new PHPRDFa;
+		$this->handler = new RDFa;
 
 		// Test that the default Type is 'Thing'
 		$this->assertEquals($this->handler->getType(), $this->defaultType);
 
-		$this->assertClassHasAttribute('types', 'PHPRDFa');
+		$this->assertClassHasAttribute('types', 'RDFa');
 	}
 
 	/**
@@ -101,7 +103,7 @@ class PHPRDFaTest extends PHPUnit_Framework_TestCase
 		$content = 'anything';
 
 		// Test display() with all null params
-		$this->handler = new PHPRDFa;
+		$this->handler = new RDFa;
 
 		$this->assertEquals($this->handler->display(), '');
 
@@ -331,11 +333,11 @@ class PHPRDFaTest extends PHPUnit_Framework_TestCase
 		$type      = 'Article';
 		$content   = 'anything';
 		$property  = 'datePublished';
-		$microdata = $this->handler;
-		$microdata->enable(true)->setType($type);
+		$rdfa      = $this->handler;
+		$rdfa->enable(true)->setType($type);
 
 		// Test Display Type: 'inline'
-		$response = $microdata->content($content)
+		$response = $rdfa->content($content)
 			->property($property)
 			->display('inline');
 
@@ -345,7 +347,7 @@ class PHPRDFaTest extends PHPUnit_Framework_TestCase
 		);
 
 		// Test Display Type: 'div'
-		$response = $microdata->content($content)
+		$response = $rdfa->content($content)
 			->property($property)
 			->display('div');
 
@@ -355,7 +357,7 @@ class PHPRDFaTest extends PHPUnit_Framework_TestCase
 		);
 
 		// Test Display Type: 'div' without $content
-		$response = $microdata->property($property)
+		$response = $rdfa->property($property)
 			->display('div');
 
 		$this->assertEquals(
@@ -364,7 +366,7 @@ class PHPRDFaTest extends PHPUnit_Framework_TestCase
 		);
 
 		// Test Display Type: 'span'
-		$response = $microdata->content($content)
+		$response = $rdfa->content($content)
 			->property($property)
 			->display('span');
 
@@ -374,7 +376,7 @@ class PHPRDFaTest extends PHPUnit_Framework_TestCase
 		);
 
 		// Test Display Type: 'span' without $content
-		$response = $microdata
+		$response = $rdfa
 			->property($property)
 			->display('span');
 
@@ -384,7 +386,7 @@ class PHPRDFaTest extends PHPUnit_Framework_TestCase
 		);
 
 		// Test Display Type: 'meta'
-		$response = $microdata->content($content)
+		$response = $rdfa->content($content)
 			->property($property)
 			->display('meta');
 
@@ -394,7 +396,7 @@ class PHPRDFaTest extends PHPUnit_Framework_TestCase
 		);
 
 		// Test Display Type: 'meta' without $content
-		$response = $microdata
+		$response = $rdfa
 			->property($property)
 			->display('meta');
 
@@ -442,19 +444,19 @@ class PHPRDFaTest extends PHPUnit_Framework_TestCase
 
 		// Test with all params
 		$this->assertEquals(
-			PHPRDFa::htmlMeta($content, $property, $scope),
+			RDFa::htmlMeta($content, $property, $scope),
 			"<meta vocab='https://schema.org' typeof='$scope' property='$property' content='$content'/>"
 		);
 
 		// Test with the $inverse mode
 		$this->assertEquals(
-			PHPRDFa::htmlMeta($content, $property, $scope, true),
+			RDFa::htmlMeta($content, $property, $scope, true),
 			"<meta property='$property' vocab='https://schema.org' typeof='$scope' content='$content'/>"
 		);
 
 		// Test without the $scope
 		$this->assertEquals(
-			PHPRDFa::htmlMeta($content, $property),
+			RDFa::htmlMeta($content, $property),
 			"<meta property='$property' content='$content'/>"
 		);
 	}
@@ -473,31 +475,31 @@ class PHPRDFaTest extends PHPUnit_Framework_TestCase
 
 		// Test with all params
 		$this->assertEquals(
-			PHPRDFa::htmlDiv($content, $property, $scope),
+			RDFa::htmlDiv($content, $property, $scope),
 			"<div vocab='https://schema.org' typeof='$scope' property='$property'>$content</div>"
 		);
 
 		// Test with the inverse mode
 		$this->assertEquals(
-			PHPRDFa::htmlDiv($content, $property, $scope, true),
+			RDFa::htmlDiv($content, $property, $scope, true),
 			"<div property='$property' vocab='https://schema.org' typeof='$scope'>$content</div>"
 		);
 
 		// Test without the $scope
 		$this->assertEquals(
-			PHPRDFa::htmlDiv($content, $property),
+			RDFa::htmlDiv($content, $property),
 			"<div property='$property'>$content</div>"
 		);
 
 		// Test without the $property
 		$this->assertEquals(
-			PHPRDFa::htmlDiv($content, $property, $scope, true),
+			RDFa::htmlDiv($content, $property, $scope, true),
 			"<div property='$property' vocab='https://schema.org' typeof='$scope'>$content</div>"
 		);
 
 		// Test without the $scope, $property
 		$this->assertEquals(
-			PHPRDFa::htmlDiv($content),
+			RDFa::htmlDiv($content),
 			"<div>$content</div>"
 		);
 	}
@@ -516,31 +518,31 @@ class PHPRDFaTest extends PHPUnit_Framework_TestCase
 
 		// Test with all params
 		$this->assertEquals(
-			PHPRDFa::htmlSpan($content, $property, $scope),
+			RDFa::htmlSpan($content, $property, $scope),
 			"<span vocab='https://schema.org' typeof='$scope' property='$property'>$content</span>"
 		);
 
 		// Test with the inverse mode
 		$this->assertEquals(
-			PHPRDFa::htmlSpan($content, $property, $scope, true),
+			RDFa::htmlSpan($content, $property, $scope, true),
 			"<span property='$property' vocab='https://schema.org' typeof='$scope'>$content</span>"
 		);
 
 		// Test without the $scope
 		$this->assertEquals(
-			PHPRDFa::htmlSpan($content, $property),
+			RDFa::htmlSpan($content, $property),
 			"<span property='$property'>$content</span>"
 		);
 
 		// Test without the $property
 		$this->assertEquals(
-			PHPRDFa::htmlSpan($content, $property, $scope, true),
+			RDFa::htmlSpan($content, $property, $scope, true),
 			"<span property='$property' vocab='https://schema.org' typeof='$scope'>$content</span>"
 		);
 
 		// Test without the $scope, $property
 		$this->assertEquals(
-			PHPRDFa::htmlSpan($content),
+			RDFa::htmlSpan($content),
 			"<span>$content</span>"
 		);
 	}
