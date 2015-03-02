@@ -4,12 +4,13 @@
  * @license    Licensed under the MIT License; see LICENSE
  */
 
-include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'structuredData.php';
+namespace PHPStructuredData;
+include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'StructuredData.php';
 
 /**
  * PHP class for interacting with Microdata semantics.
  *
- * @since  1.0
+ * @since 1.0
  */
 class Microdata extends StructuredData
 {

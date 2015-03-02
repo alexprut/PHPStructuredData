@@ -4,14 +4,15 @@
  * @license    Licensed under the MIT License; see LICENSE
  */
 
-include_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'src/structuredData.php';
+namespace PHPStructuredDataTest;
+use PHPStructuredData\StructuredData as StructuredData;
 
 /**
  * Test class for StructuredData
  *
  * @since  1.0
  */
-class StructuredDataTest extends PHPUnit_Framework_TestCase
+class StructuredDataTest extends \PHPUnit_Framework_TestCase
 {
 	/**
 	 * Test the isTypeAvailable() function
@@ -115,7 +116,7 @@ class StructuredDataTest extends PHPUnit_Framework_TestCase
 	 */
 	protected static function getMethod($name)
 	{
-		$class = new ReflectionClass('StructuredData');
+		$class = new \ReflectionClass('PHPStructuredData\StructuredData');
 		$method = $class->getMethod($name);
 		$method->setAccessible(true);
 

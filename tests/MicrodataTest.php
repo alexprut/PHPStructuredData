@@ -4,14 +4,15 @@
  * @license    Licensed under the MIT License; see LICENSE
  */
 
-include_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'src/microdata.php';
+namespace PHPStructuredDataTest;
+use PHPStructuredData\Microdata as Microdata;
 
 /**
  * Test class for Microdata
  *
  * @since  1.0
  */
-class MicrodataTest extends PHPUnit_Framework_TestCase
+class MicrodataTest extends \PHPUnit_Framework_TestCase
 {
 	/**
 	 * The default fallback Type
@@ -49,7 +50,7 @@ class MicrodataTest extends PHPUnit_Framework_TestCase
 		// Test that the default Type is 'Thing'
 		$this->assertEquals($this->handler->getType(), $this->defaultType);
 
-		$this->assertClassHasAttribute('types', 'Microdata');
+		$this->assertClassHasAttribute('types', 'PHPStructuredData\Microdata');
 	}
 
 	/**

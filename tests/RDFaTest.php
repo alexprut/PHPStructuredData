@@ -4,14 +4,15 @@
  * @license    Licensed under the MIT License; see LICENSE
  */
 
-include_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'src/rdfa.php';
+namespace PHPStructuredDataTest;
+use PHPStructuredData\RDFa as RDFa;
 
 /**
  * Test class for RDFa
  *
  * @since  1.1
  */
-class RDFaTest extends PHPUnit_Framework_TestCase
+class RDFaTest extends \PHPUnit_Framework_TestCase
 {
 	/**
 	 * The default fallback Type
@@ -49,7 +50,7 @@ class RDFaTest extends PHPUnit_Framework_TestCase
 		// Test that the default Type is 'Thing'
 		$this->assertEquals($this->handler->getType(), $this->defaultType);
 
-		$this->assertClassHasAttribute('types', 'RDFa');
+		$this->assertClassHasAttribute('types', 'PHPStructuredData\RDFa');
 	}
 
 	/**

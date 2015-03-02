@@ -4,14 +4,15 @@
  * @license    Licensed under the MIT License; see LICENSE
  */
 
-include_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'src/parserPlugin.php';
+namespace PHPStructuredDataTest;
+use PHPStructuredData\ParserPlugin as ParserPlugin;
 
 /**
  * Test class for ParserPlugin
  *
  * @since  1.1
  */
-class ParserPluginTest extends PHPUnit_Framework_TestCase
+class ParserPluginTest extends \PHPUnit_Framework_TestCase
 {
 	/**
 	 * Tested class handler
@@ -426,7 +427,7 @@ class ParserPluginTest extends PHPUnit_Framework_TestCase
 	 */
 	protected static function getMethod($name)
 	{
-		$class = new ReflectionClass('ParserPlugin');
+		$class = new \ReflectionClass('PHPStructuredData\ParserPlugin');
 		$method = $class->getMethod($name);
 		$method->setAccessible(true);
 

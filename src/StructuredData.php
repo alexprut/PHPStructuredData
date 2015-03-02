@@ -4,6 +4,8 @@
  * @license    Licensed under the MIT License; see LICENSE
  */
 
+namespace PHPStructuredData;
+
 /**
  * PHP abstract class for interacting with Microdata and RDFa Lite 1.1 semantics.
  *

@@ -3,3 +3,6 @@
 .buildpath
 .idea
 vendor
+.DS_Store
+composer.phar
+composer.lock

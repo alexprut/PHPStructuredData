@@ -4,7 +4,8 @@
  * @license    Licensed under the MIT License; see LICENSE
  */
 
-include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'structuredData.php';
+namespace PHPStructuredData;
+include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'StructuredData.php';
 
 /**
  * PHP class for interacting with RDFa Lite 1.1 semantics.

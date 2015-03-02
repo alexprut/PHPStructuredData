@@ -4,8 +4,7 @@
  * @license    Licensed under the MIT License; see LICENSE
  */
 
-include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'rdfa.php';
-include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'microdata.php';
+namespace PHPStructuredData;
 
 /**
  * PHP class for parsing the HTML markup and
@@ -60,7 +59,7 @@ class ParserPlugin
 	 *
 	 * @param   string  $type  The type of semantic to output, accepted types are 'Microdata' or 'RDFa'
 	 *
-	 * @throws ErrorException
+	 * @throws \ErrorException
 	 * @return ParserPlugin
 	 */
 	public function semantic($type)
@@ -69,18 +68,20 @@ class ParserPlugin
 		$type = trim(strtolower($type));
 
 		// Available only 2 possible types of semantic, 'Microdata' or 'RDFa', otherwise throw an Exception
-		switch ($type)
-		{
-			case 'microdata':
-				$this->handler = new Microdata;
-				break;
-			case 'rdfa':
-				$this->handler = new RDFa;
-				break;
-			default:
-				throw new ErrorException('There is no ' . $type . ' library available');
-				break;
-		}
+        switch ($type)
+        {
+            case 'microdata':
+                include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Microdata.php';
+                $this->handler = new Microdata;
+                break;
+            case 'rdfa':
+                include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'RDFa.php';
+                $this->handler = new RDFa;
+                break;
+            default:
+                throw new \ErrorException('There is no ' . $type . ' library available');
+                break;
+        }
 
 		return $this;
 	}
@@ -396,11 +397,11 @@ class ParserPlugin
 	 * Find the first data-suffix attribute match available in the node
 	 * e.g. <tag data-one="suffix" data-two="suffix" /> will return 'one'
 	 *
-	 * @param   DOMElement  $node  The node to parse
+	 * @param   \DOMElement  $node  The node to parse
 	 *
 	 * @return  mixed
 	 */
-	protected function getNodeSuffix(DOMElement $node)
+	protected function getNodeSuffix(\DOMElement $node)
 	{
 		foreach ($this->suffix as $suffix)
 		{
@@ -426,11 +427,11 @@ class ParserPlugin
 		libxml_use_internal_errors(true);
 
 		// Create a new DOMDocument
-		$doc = new DOMDocument;
+		$doc = new \DOMDocument;
 		$doc->loadHTML($html);
 
 		// Create a new DOMXPath, to make XPath queries
-		$xpath = new DOMXPath($doc);
+		$xpath = new \DOMXPath($doc);
 
 		// Create the query pattern
 		$query = array();

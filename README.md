@@ -36,7 +36,7 @@ Installation
 
 Usage Example
 -------------
-Let's suppose that you already have an instance of the Microdata or RDFa library. And you need to add Microdata or RDFa semantics to the following HTML which is part of an article (_e.g._ ```$sd = new Microdata('Article');```).
+Let's suppose that you already have an instance of the Microdata or RDFa library. And you need to add Microdata or RDFa semantics to the following HTML which is part of an article (_e.g._ ```$sd = new PHPStructuredData\Microdata('Article');```).
 ```php
 <div <?php echo $sd->displayScope();?>>
     <!-- Language -->
@@ -328,7 +328,7 @@ Or using ```RDFa``` semantics as:
 
 Usage Example
 -------------
-Let's suppose that you already have an instance of the ```ParserPlugin``` library. And you need to add Microdata or RDFa semantics to the following HTML which is part of an article (_e.g._ ```$parser = new ParserPlugin('microdata'); $scope='Article';```).
+Let's suppose that you already have an instance of the ```ParserPlugin``` library. And you need to add Microdata or RDFa semantics to the following HTML which is part of an article (_e.g._ ```$parser = new PHPStructuredData\ParserPlugin('microdata'); $scope='Article';```).
 ```html
 <div data-sd="<?php echo $scope;?>">
     <!-- Title -->
