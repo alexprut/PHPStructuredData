@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright  Copyright (C) 2013 - 2014 P.Alex (Alexandru Pruteanu)
+ * @copyright  Copyright (C) 2013 - 2015 P.Alex (Alexandru Pruteanu)
  * @license    Licensed under the MIT License; see LICENSE
  */
 
