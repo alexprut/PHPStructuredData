@@ -23,8 +23,15 @@
 			"PHPStructuredDataTest\\": "tests/"
 		}
 	},
+    "repositories": [
+        {
+            "type": "vcs",
+            "url":  "https://github.com/PAlexcom/Spider4Schema.git"
+        }
+    ],
 	"require": {
-		"php": ">=5.3.0"
+		"php": ">=5.3.0",
+        "palex/spider4schema": "dev-master"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "*",
