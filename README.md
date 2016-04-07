@@ -1,4 +1,4 @@
-PHPStructuredData [![Build Status](https://travis-ci.org/PAlexcom/PHPStructuredData.svg)](https://travis-ci.org/PAlexcom/PHPStructuredData)
+PHPStructuredData [![Build Status](https://travis-ci.org/alexprut/PHPStructuredData.svg)](https://travis-ci.org/alexprut/PHPStructuredData)
 =================
 A set of PHP libraries that use the http://schema.org vocabulary to implement and output Microdata or RDFa Lite 1.1 semantics.  
 This library is used in the Joomla CMS since version 3.2 (called [JMicrodata](https://github.com/joomla/joomla-cms/tree/master/libraries/joomla/microdata "JMicrodata")).  
@@ -15,7 +15,7 @@ The library was designed with this goals in mind:
 
 Class diagram
 -------------
-![Class Diagram](https://palexcom.github.io/PHPStructuredData/images/classdiagram-v2.0.0.png)
+![Class Diagram](https://alexprut.github.io/PHPStructuredData/images/classdiagram-v2.0.0.png)
 
 Installation
 ------------
@@ -30,9 +30,9 @@ Installation
     }
     ```
 * __From Source__:  
-    Run ```git clone https://github.com/PAlexcom/PHPStructuredData.git```
+    Run ```git clone https://github.com/alexprut/PHPStructuredData.git```
 * __Direct download__:  
-    Download the last version from [here](https://github.com/PAlexcom/PHPStructuredData/archive/master.zip "download")
+    Download the last version from [here](https://github.com/alexprut/PHPStructuredData/archive/master.zip "download")
 
 Usage Example
 -------------
@@ -175,7 +175,7 @@ The ```data-*``` attributes are new in HTML5, they gives us the ability to embed
 Markup Syntax
 -------------
 ##### setType
-![ParserPlugin Syntax](https://palexcom.github.io/PHPStructuredData/images/parser-plugin-syntax-v1.3.0-setType.png)  
+![ParserPlugin Syntax](https://alexprut.github.io/PHPStructuredData/images/parser-plugin-syntax-v1.3.0-setType.png)
 The _type_ defines which schema is being used for the following markup.  The Type must always have the first character Uppercase to be correctly interpreted. If the type is a valid schema, the global scope for the page from this point onwards is updated to this schema. The plugin will replace the data tag with ```itemscope itemtype='https://schema.org/Type'``` in case of Microdata semantics or ```vocab='https://schema.org' typeof='Type'``` in case of RDFa Lite 1.1 semantics.  
   
 ###### Example:
@@ -199,7 +199,7 @@ Or using ```RDFa``` semantics as:
 ```
 
 ##### Specifying generic item properties
-![ParserPlugin Syntax](https://palexcom.github.io/PHPStructuredData/images/parser-plugin-syntax-v1.3.0-global.png)  
+![ParserPlugin Syntax](https://alexprut.github.io/PHPStructuredData/images/parser-plugin-syntax-v1.3.0-global.png)
 Once a schema has been declared, the next step is to declare individual properties – explaining the content and giving it semantic meaning.
   
 The _property_ must always have the first character as lowercase to be correctly interpreted. If the property is found to be part of the current schema, the plugin will replace the data tag with ```itemprop='property'``` in case of Microdata semantics or ```property='property'``` in case of RDFa Lite 1.1 semantics.  If the property is not found to be a valid property of the active schema, it will be ignored and the next available property will be parsed.
@@ -225,7 +225,7 @@ Or using ```RDFa``` semantics as:
 ```
 
 ##### Specifying schema—dependant item properties
-![ParserPlugin Syntax](https://palexcom.github.io/PHPStructuredData/images/parser-plugin-syntax-v1.3.0-specialized.png)  
+![ParserPlugin Syntax](https://alexprut.github.io/PHPStructuredData/images/parser-plugin-syntax-v1.3.0-specialized.png)
 Sometimes you may want to explicitly state a property which should only be used when a specific schema is active – for example, if the property has a specific property in one schema, which is called something different in another schema.
 
 It is possible to achieve this by using a schema–dependant property.  This works by using a combination between both _Type_ and _property_, separated by a full stop. In short, if the current global scope is equal to Type and the property is part of that Type, the plugin will replace the data tag with ```itemprop='property'``` in case of Microdata semantics or ```property='property'``` in case of RDFa Lite 1.1.
@@ -254,7 +254,7 @@ Or using ```RDFa``` semantics as:
 ```
 
 ### Using multiple properties
-![ParserPlugin Syntax](https://palexcom.github.io/PHPStructuredData/images/parser-plugin-syntax-v1.3.0.png)  
+![ParserPlugin Syntax](https://alexprut.github.io/PHPStructuredData/images/parser-plugin-syntax-v1.3.0.png)
 It is possible, using a combination of these, to specify multiple properties including some which are specific for a schema and others which are generic. The order of the building blocks isn't significant and a white space is used as a separator.
 
 ###### Example:
@@ -442,7 +442,7 @@ The ```RDFa``` output will be:
 
 Documentation
 -------------
-```PHPStructuredData``` libraries use the ```types.json``` file to check and output validated semantics, that file contains all the available Types and Properties from the http://schema.org vocabulary, and it was generated automatically with the https://github.com/PAlexcom/Spider4Schema web crawler.
+```PHPStructuredData``` libraries use the ```types.json``` file to check and output validated semantics, that file contains all the available Types and Properties from the http://schema.org vocabulary, and it was generated automatically with the https://github.com/alexprut/Spider4Schema web crawler.
 
 Todos
 -----
