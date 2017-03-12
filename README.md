@@ -175,7 +175,7 @@ The ```data-*``` attributes are new in HTML5, they gives us the ability to embed
 Markup Syntax
 -------------
 ##### setType
-![ParserPlugin Syntax](https://alexprut.github.io/PHPStructuredData/images/parser-plugin-syntax-v1.3.0-setType.png)
+![ParserPlugin Syntax](https://alexprut.github.io/PHPStructuredData/images/parser-plugin-syntax-v1.3.0-setType.png)  
 The _type_ defines which schema is being used for the following markup.  The Type must always have the first character Uppercase to be correctly interpreted. If the type is a valid schema, the global scope for the page from this point onwards is updated to this schema. The plugin will replace the data tag with ```itemscope itemtype='https://schema.org/Type'``` in case of Microdata semantics or ```vocab='https://schema.org' typeof='Type'``` in case of RDFa Lite 1.1 semantics.  
   
 ###### Example:
@@ -199,7 +199,7 @@ Or using ```RDFa``` semantics as:
 ```
 
 ##### Specifying generic item properties
-![ParserPlugin Syntax](https://alexprut.github.io/PHPStructuredData/images/parser-plugin-syntax-v1.3.0-global.png)
+![ParserPlugin Syntax](https://alexprut.github.io/PHPStructuredData/images/parser-plugin-syntax-v1.3.0-global.png)  
 Once a schema has been declared, the next step is to declare individual properties – explaining the content and giving it semantic meaning.
   
 The _property_ must always have the first character as lowercase to be correctly interpreted. If the property is found to be part of the current schema, the plugin will replace the data tag with ```itemprop='property'``` in case of Microdata semantics or ```property='property'``` in case of RDFa Lite 1.1 semantics.  If the property is not found to be a valid property of the active schema, it will be ignored and the next available property will be parsed.
@@ -225,7 +225,7 @@ Or using ```RDFa``` semantics as:
 ```
 
 ##### Specifying schema—dependant item properties
-![ParserPlugin Syntax](https://alexprut.github.io/PHPStructuredData/images/parser-plugin-syntax-v1.3.0-specialized.png)
+![ParserPlugin Syntax](https://alexprut.github.io/PHPStructuredData/images/parser-plugin-syntax-v1.3.0-specialized.png)  
 Sometimes you may want to explicitly state a property which should only be used when a specific schema is active – for example, if the property has a specific property in one schema, which is called something different in another schema.
 
 It is possible to achieve this by using a schema–dependant property.  This works by using a combination between both _Type_ and _property_, separated by a full stop. In short, if the current global scope is equal to Type and the property is part of that Type, the plugin will replace the data tag with ```itemprop='property'``` in case of Microdata semantics or ```property='property'``` in case of RDFa Lite 1.1.
@@ -254,7 +254,7 @@ Or using ```RDFa``` semantics as:
 ```
 
 ### Using multiple properties
-![ParserPlugin Syntax](https://alexprut.github.io/PHPStructuredData/images/parser-plugin-syntax-v1.3.0.png)
+![ParserPlugin Syntax](https://alexprut.github.io/PHPStructuredData/images/parser-plugin-syntax-v1.3.0.png)  
 It is possible, using a combination of these, to specify multiple properties including some which are specific for a schema and others which are generic. The order of the building blocks isn't significant and a white space is used as a separator.
 
 ###### Example:
